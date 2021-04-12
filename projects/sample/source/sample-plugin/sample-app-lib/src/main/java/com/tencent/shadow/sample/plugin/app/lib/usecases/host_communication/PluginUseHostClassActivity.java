@@ -27,6 +27,8 @@ import com.tencent.shadow.sample.host.lib.HostUiLayerProvider;
 import com.tencent.shadow.sample.plugin.app.lib.gallery.BaseActivity;
 import com.tencent.shadow.sample.plugin.app.lib.gallery.cases.entity.UseCase;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 public class PluginUseHostClassActivity extends BaseActivity {
     public static class Case extends UseCase {
         @Override
@@ -56,5 +58,7 @@ public class PluginUseHostClassActivity extends BaseActivity {
         linearLayout.addView(hostUiLayer);
 
         setContentView(linearLayout);
+
+        ReentrantLock
     }
 }

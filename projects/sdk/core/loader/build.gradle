@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 
-apply plugin: 'kotlin-android'
+//apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
+//apply plugin: 'kotlin-android-extensions'
 
 group 'com.tencent.shadow.core'
 
@@ -34,14 +34,14 @@ android {
     }
 
     sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
+//        main.java.srcDirs += 'src/main/kotlin'
         main.java.srcDirs += project(':generate-delegate-code').buildDir.path + '/generated/DelegateCode/loader'
-        test.java.srcDirs += 'src/test/kotlin'
+//        test.java.srcDirs += 'src/test/kotlin'
     }
 }
 
 dependencies {
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+//    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
 
     api project(':runtime')

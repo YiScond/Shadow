@@ -121,7 +121,7 @@ publishing {
             pom.withXml {
                 def root = asNode()
                 def dependencies = root.appendNode('dependencies')
-                dependencies.append(getDependencyNode('compile', 'org.jetbrains.kotlin', 'kotlin-stdlib-jdk7', kotlin_version))
+//                dependencies.append(getDependencyNode('compile', 'org.jetbrains.kotlin', 'kotlin-stdlib-jdk7', kotlin_version))
                 dependencies.append(getDependencyNode('compile', 'com.android.tools.build', 'gradle', build_gradle_version))
                 dependencies.append(getDependencyNode('compile', coreGroupId, 'transform-kit', publicationVersion))
                 dependencies.append(getDependencyNode('compile', coreGroupId, 'transform', publicationVersion))
@@ -170,7 +170,7 @@ publishing {
             pom.withXml {
                 def root = asNode()
                 def dependencies = root.appendNode('dependencies')
-                dependencies.append(getDependencyNode('compile', 'org.jetbrains.kotlin', 'kotlin-stdlib-jdk7', kotlin_version))
+//                dependencies.append(getDependencyNode('compile', 'org.jetbrains.kotlin', 'kotlin-stdlib-jdk7', kotlin_version))
                 dependencies.append(getDependencyNode('compile', coreGroupId, 'runtime', publicationVersion))
                 dependencies.append(getDependencyNode('provided', coreGroupId, 'activity-container', publicationVersion))
                 dependencies.append(getDependencyNode('provided', coreGroupId, 'common', publicationVersion))
@@ -334,7 +334,7 @@ publishing {
             pom.withXml {
                 def root = asNode()
                 def dependencies = root.appendNode('dependencies')
-                dependencies.append(getDependencyNode('compile', 'org.jetbrains.kotlin', 'kotlin-stdlib-jdk7', kotlin_version))
+//                dependencies.append(getDependencyNode('compile', 'org.jetbrains.kotlin', 'kotlin-stdlib-jdk7', kotlin_version))
                 dependencies.append(getDependencyNode('compile', coreGroupId, 'loader', publicationVersion))
                 dependencies.append(getDependencyNode('provided', coreGroupId, 'activity-container', publicationVersion))
                 dependencies.append(getDependencyNode('provided', coreGroupId, 'common', publicationVersion))

@@ -42,13 +42,12 @@ class BinderUuidManager implements UuidManager {
     }
 
     @Override
-    public InstalledApk getPlugin(String uuid, String partKey) throws android.os.RemoteException, FailedException, NotFoundException {
+    public InstalledApk getPlugin(String partKey) throws android.os.RemoteException, FailedException, NotFoundException {
         Parcel _data = Parcel.obtain();
         Parcel _reply = Parcel.obtain();
         InstalledApk _result;
         try {
             _data.writeInterfaceToken(UuidManager.DESCRIPTOR);
-            _data.writeString(uuid);
             _data.writeString(partKey);
             mRemote.transact(UuidManager.TRANSACTION_getPlugin, _data, _reply, 0);
             checkException(_reply);
@@ -64,47 +63,4 @@ class BinderUuidManager implements UuidManager {
         return _result;
     }
 
-    @Override
-    public InstalledApk getPluginLoader(String uuid) throws android.os.RemoteException, NotFoundException, FailedException {
-        Parcel _data = Parcel.obtain();
-        Parcel _reply = Parcel.obtain();
-        InstalledApk _result;
-        try {
-            _data.writeInterfaceToken(UuidManager.DESCRIPTOR);
-            _data.writeString(uuid);
-            mRemote.transact(UuidManager.TRANSACTION_getPluginLoader, _data, _reply, 0);
-            checkException(_reply);
-            if ((0 != _reply.readInt())) {
-                _result = InstalledApk.CREATOR.createFromParcel(_reply);
-            } else {
-                _result = null;
-            }
-        } finally {
-            _reply.recycle();
-            _data.recycle();
-        }
-        return _result;
-    }
-
-    @Override
-    public InstalledApk getRuntime(String uuid) throws android.os.RemoteException, NotFoundException, FailedException {
-        Parcel _data = Parcel.obtain();
-        Parcel _reply = Parcel.obtain();
-        InstalledApk _result;
-        try {
-            _data.writeInterfaceToken(UuidManager.DESCRIPTOR);
-            _data.writeString(uuid);
-            mRemote.transact(UuidManager.TRANSACTION_getRuntime, _data, _reply, 0);
-            checkException(_reply);
-            if ((0 != _reply.readInt())) {
-                _result = InstalledApk.CREATOR.createFromParcel(_reply);
-            } else {
-                _result = null;
-            }
-        } finally {
-            _reply.recycle();
-            _data.recycle();
-        }
-        return _result;
-    }
 }

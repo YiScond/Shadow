@@ -57,7 +57,6 @@ public final class DynamicPluginLoader {
     private final ClassLoader mDynamicLoaderClassLoader;
     private Context mContext;
     private UuidManager mUuidManager;
-    private String mUuid;
     private final Handler mUiHandler;
     private final HashMap<IBinder, ServiceConnection> mConnectionMap;
     private static final String CORE_LOADER_FACTORY_IMPL_NAME = "com.tencent.shadow.dynamic.loader.impl.CoreLoaderFactoryImpl";
@@ -72,7 +71,7 @@ public final class DynamicPluginLoader {
         UuidManager uuidManager = this.mUuidManager;
 
         try {
-            InstalledApk installedApk2 = uuidManager.getPlugin(this.mUuid, partKey);
+            InstalledApk installedApk2 = uuidManager.getPlugin(partKey);
             Future future = this.mPluginLoader.loadPlugin(installedApk2);
             future.get();
         } catch (Exception e) {
@@ -237,7 +236,7 @@ public final class DynamicPluginLoader {
         return mPluginLoader.getPluginServiceManager().bindPluginService(pluginServiceIntent, connWrapper, flags);
     }
 
-    public DynamicPluginLoader( Context hostContext,  String uuid) {
+    public DynamicPluginLoader(Context hostContext) {
         ClassLoader classLoader = DynamicPluginLoader.class.getClassLoader();
         this.mDynamicLoaderClassLoader = classLoader;
         this.mUiHandler = new Handler(Looper.getMainLooper());
@@ -252,7 +251,6 @@ public final class DynamicPluginLoader {
             throw new RuntimeException("\u5f53\u524d\u7684classLoader\u627e\u4e0d\u5230PluginLoader\u7684\u5b9e\u73b0", e);
         }
         this.mContext = hostContext;
-        this.mUuid = uuid;
     }
 
     private static final class ServiceConnectionWrapper

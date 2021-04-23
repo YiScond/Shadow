@@ -34,14 +34,6 @@ import java.util.Map;
  */
 public class InstalledPlugin implements Serializable {
 
-    /**
-     * 标识一次插件发布的id
-     */
-    public String UUID;
-    /**
-     * 标识一次插件发布的id，可以使用自定义格式描述版本信息
-     */
-    public String UUID_NickName;
 
     /**
      * pluginLoader文件
@@ -93,7 +85,7 @@ public class InstalledPlugin implements Serializable {
         final public String[] dependsOn;
         final public String[] hostWhiteList;
 
-        PluginPart(int pluginType, String businessName, File file, File oDexDir, File libraryDir, String[] dependsOn, String[] hostWhiteList) {
+        public PluginPart(int pluginType, String businessName, File file, File oDexDir, File libraryDir, String[] dependsOn, String[] hostWhiteList) {
             super(pluginType, file, oDexDir, libraryDir);
             this.businessName = businessName;
             this.dependsOn = dependsOn;

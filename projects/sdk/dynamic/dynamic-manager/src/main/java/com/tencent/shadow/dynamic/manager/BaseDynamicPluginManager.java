@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Parcel;
-import android.os.RemoteException;
 
 import com.tencent.shadow.core.common.InstalledApk;
 import com.tencent.shadow.core.common.Logger;
@@ -16,7 +15,6 @@ import com.tencent.shadow.core.common.LoggerFactory;
 import com.tencent.shadow.core.load_parameters.LoadParameters;
 import com.tencent.shadow.core.manager.BasePluginManager;
 import com.tencent.shadow.core.manager.installplugin.InstalledPlugin;
-import com.tencent.shadow.core.manager.installplugin.InstalledType;
 import com.tencent.shadow.dynamic.host.FailedException;
 import com.tencent.shadow.dynamic.host.NotFoundException;
 
@@ -170,13 +168,14 @@ abstract public class BaseDynamicPluginManager extends BasePluginManager impleme
         }
     }
 
-    public InstalledApk getPlugin(String uuid, String partKey) throws FailedException, NotFoundException {
+    @Override
+    public InstalledApk getPlugin(String partKey) throws FailedException, NotFoundException {
         try {
             InstalledPlugin.Part part;
             try {
-                part = getPluginPartByPartKey(uuid, partKey);
+                part = getPluginPartByPartKey(partKey);
             } catch (RuntimeException e) {
-                throw new NotFoundException("uuid==" + uuid + "partKey==" + partKey + "的Plugin找不到");
+                throw new NotFoundException("partKey==" + partKey + "的Plugin找不到");
             }
             String businessName = part instanceof InstalledPlugin.PluginPart ? ((InstalledPlugin.PluginPart) part).businessName : null;
             String[] dependsOn = part instanceof InstalledPlugin.PluginPart ? ((InstalledPlugin.PluginPart) part).dependsOn : null;
@@ -201,32 +200,5 @@ abstract public class BaseDynamicPluginManager extends BasePluginManager impleme
             }
             throw new FailedException(e);
         }
-    }
-
-    private InstalledApk getInstalledPL(String uuid, int type) throws FailedException, NotFoundException {
-        try {
-            InstalledPlugin.Part part;
-            try {
-                part = getLoaderOrRunTimePart(uuid, type);
-            } catch (RuntimeException e) {
-                if (mLogger.isErrorEnabled()) {
-                    mLogger.error("getInstalledPL exception:", e);
-                }
-                throw new NotFoundException("uuid==" + uuid + " type==" + type + "没找到。cause：" + e.getMessage());
-            }
-            return new InstalledApk(part.pluginFile.getAbsolutePath(),
-                    part.oDexDir == null ? null : part.oDexDir.getAbsolutePath(),
-                    part.libraryDir == null ? null : part.libraryDir.getAbsolutePath());
-        } catch (RuntimeException e) {
-            throw new FailedException(e);
-        }
-    }
-
-    public InstalledApk getPluginLoader(String uuid) throws FailedException, NotFoundException {
-        return getInstalledPL(uuid, InstalledType.TYPE_PLUGIN_LOADER);
-    }
-
-    public InstalledApk getRuntime(String uuid) throws FailedException, NotFoundException {
-        return getInstalledPL(uuid, InstalledType.TYPE_PLUGIN_RUNTIME);
     }
 }

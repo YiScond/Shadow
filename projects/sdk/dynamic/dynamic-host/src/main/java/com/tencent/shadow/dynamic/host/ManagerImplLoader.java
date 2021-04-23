@@ -32,36 +32,16 @@ final class ManagerImplLoader extends ImplLoader {
                     "com.tencent.shadow.dynamic.host"
             };
     final private Context applicationContext;
-    final private InstalledApk installedApk;
 
-    ManagerImplLoader(Context context, File apk) {
+    ManagerImplLoader(Context context) {
         applicationContext = context.getApplicationContext();
-        File root = new File(applicationContext.getFilesDir(), "ManagerImplLoader");
-        File odexDir = new File(root, Long.toString(apk.lastModified(), Character.MAX_RADIX));
-        odexDir.mkdirs();
-        installedApk = new InstalledApk(apk.getAbsolutePath(), odexDir.getAbsolutePath(), null);
     }
 
     PluginManagerImpl load() {
-        ApkClassLoader apkClassLoader = new ApkClassLoader(
-                installedApk,
-                getClass().getClassLoader(),
-                loadWhiteList(installedApk),
-                1
-        );
-
-        Context pluginManagerContext = new ChangeApkContextWrapper(
-                applicationContext,
-                installedApk.apkFilePath,
-                apkClassLoader
-        );
-
         try {
-            ManagerFactory managerFactory = apkClassLoader.getInterface(
-                    ManagerFactory.class,
-                    MANAGER_FACTORY_CLASS_NAME
-            );
-            return managerFactory.buildManager(pluginManagerContext);
+            Class implClass = getClass().getClassLoader().loadClass(MANAGER_FACTORY_CLASS_NAME);
+            ManagerFactory managerFactory = (ManagerFactory) implClass.newInstance();
+            return managerFactory.buildManager(applicationContext);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

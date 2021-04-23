@@ -30,7 +30,6 @@ import com.tencent.shadow.dynamic.host.FailedException;
 import com.tencent.shadow.dynamic.host.PluginManagerImpl;
 import com.tencent.shadow.dynamic.host.PluginProcessService;
 import com.tencent.shadow.dynamic.host.PpsController;
-import com.tencent.shadow.dynamic.host.PpsStatus;
 import com.tencent.shadow.dynamic.loader.PluginLoader;
 
 public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPluginManager implements PluginManagerImpl {
@@ -42,7 +41,7 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
     protected PpsController mPpsController;
 
     /**
-     * 插件加载服务端接口6
+     * 插件加载服务端接口
      */
     protected PluginLoader mPluginLoader;
 
@@ -68,17 +67,6 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
                 throw new RuntimeException(e);
             }
         }
-
-        try {
-            IBinder iBinder = mPpsController.getPluginLoader();
-            if (iBinder != null) {
-                mPluginLoader = new BinderPluginLoader(iBinder);
-            }
-        } catch (RemoteException ignored) {
-            if (mLogger.isErrorEnabled()) {
-                mLogger.error("onServiceConnected mPpsController getPluginLoader:", ignored);
-            }
-        }
     }
 
     @Override
@@ -87,25 +75,11 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
         mPluginLoader = null;
     }
 
-    public final void loadRunTime(String uuid) throws RemoteException, FailedException {
-        if (mLogger.isInfoEnabled()) {
-            mLogger.info("loadRunTime mPpsController:" + mPpsController);
-        }
-        PpsStatus ppsStatus = mPpsController.getPpsStatus();
-        if (!ppsStatus.runtimeLoaded) {
-            mPpsController.loadRuntime(uuid);
-        }
-    }
-
-    public final void loadPluginLoader(String uuid) throws RemoteException, FailedException {
+    public final void loadPluginLoader() throws RemoteException, FailedException {
         if (mLogger.isInfoEnabled()) {
             mLogger.info("loadPluginLoader mPluginLoader:" + mPluginLoader);
         }
         if (mPluginLoader == null) {
-            PpsStatus ppsStatus = mPpsController.getPpsStatus();
-            if (!ppsStatus.loaderLoaded) {
-                mPpsController.loadPluginLoader(uuid);
-            }
             IBinder iBinder = mPpsController.getPluginLoader();
             mPluginLoader = new BinderPluginLoader(iBinder);
         }

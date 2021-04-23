@@ -38,19 +38,10 @@ final class LoaderImplLoader extends ImplLoader {
     private final static String sLoaderFactoryImplClassName
             = "com.tencent.shadow.dynamic.loader.impl.LoaderFactoryImpl";
 
-    PluginLoaderImpl load(InstalledApk installedApk, String uuid, Context appContext) throws Exception {
-        ApkClassLoader pluginLoaderClassLoader = new ApkClassLoader(
-                installedApk,
-                LoaderImplLoader.class.getClassLoader(),
-                loadWhiteList(installedApk),
-                1
-        );
-        LoaderFactory loaderFactory = pluginLoaderClassLoader.getInterface(
-                LoaderFactory.class,
-                sLoaderFactoryImplClassName
-        );
-
-        return loaderFactory.buildLoader(uuid, appContext);
+    PluginLoaderImpl load(Context appContext) throws Exception {
+        Class loaderImplClass = getClass().getClassLoader().loadClass(sLoaderFactoryImplClassName);
+        LoaderFactory loaderFactory = (LoaderFactory) loaderImplClass.newInstance();
+        return loaderFactory.buildLoader(appContext);
     }
 
     @Override

@@ -54,37 +54,6 @@ public class DynamicRuntime {
      * @return true 加载了新的runtime
      */
     public static boolean loadRuntime(InstalledApk installedRuntimeApk) {
-        ClassLoader contextClassLoader = DynamicRuntime.class.getClassLoader();
-        RuntimeClassLoader runtimeClassLoader = getRuntimeClassLoader();
-        if (runtimeClassLoader != null) {
-            String apkPath = runtimeClassLoader.apkPath;
-            if (mLogger.isInfoEnabled()) {
-                mLogger.info("last apkPath:" + apkPath + " new apkPath:" + installedRuntimeApk.apkFilePath);
-            }
-            if (TextUtils.equals(apkPath, installedRuntimeApk.apkFilePath)) {
-                //已经加载相同版本的runtime了,不需要加载
-                if (mLogger.isInfoEnabled()) {
-                    mLogger.info("已经加载相同apkPath的runtime了,不需要加载");
-                }
-                return false;
-            } else {
-                //版本不一样，说明要更新runtime，先恢复正常的classLoader结构
-                if (mLogger.isInfoEnabled()) {
-                    mLogger.info("加载不相同apkPath的runtime了,先恢复classLoader树结构");
-                }
-                try {
-                    recoveryClassLoader();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        //正常处理，将runtime 挂到pathclassLoader之上
-        try {
-            hackParentToRuntime(installedRuntimeApk, contextClassLoader);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         return true;
     }
 

@@ -77,7 +77,7 @@ public class LoadPluginBloc {
                     );
 
                     if (packageArchiveInfo == null) {
-                        throw new NullPointerException("getPackageArchiveInfo return null.archiveFilePath==$archiveFilePath");
+                        throw new NullPointerException("getPackageArchiveInfo return null.archiveFilePath==" + archiveFilePath);
                     }
 
                     ShadowContext tempContext = new ShadowContext(hostAppContext, 0);

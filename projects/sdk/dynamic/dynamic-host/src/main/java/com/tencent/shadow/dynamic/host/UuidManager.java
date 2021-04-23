@@ -29,12 +29,6 @@ public interface UuidManager {
     int TRANSACTION_CODE_NOT_FOUND_EXCEPTION = 2;
     String DESCRIPTOR = UuidManager.class.getName();
     int TRANSACTION_getPlugin = (android.os.IBinder.FIRST_CALL_TRANSACTION);
-    int TRANSACTION_getPluginLoader = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
-    int TRANSACTION_getRuntime = (android.os.IBinder.FIRST_CALL_TRANSACTION + 2);
 
-    InstalledApk getPlugin(String uuid, String partKey) throws RemoteException, NotFoundException, FailedException;
-
-    InstalledApk getPluginLoader(String uuid) throws RemoteException, NotFoundException, FailedException;
-
-    InstalledApk getRuntime(String uuid) throws RemoteException, NotFoundException, FailedException;
+    InstalledApk getPlugin(String partKey) throws RemoteException, NotFoundException, FailedException;
 }

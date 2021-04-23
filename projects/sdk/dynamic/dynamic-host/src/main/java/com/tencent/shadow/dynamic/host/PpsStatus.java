@@ -22,20 +22,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public final class PpsStatus implements Parcelable {
-    final public String uuid;
     final public boolean runtimeLoaded;
     final public boolean loaderLoaded;
     final public boolean uuidManagerSet;
 
-    PpsStatus(String uuid, boolean runtimeLoaded, boolean loaderLoaded, boolean uuidManagerSet) {
-        this.uuid = uuid;
+    PpsStatus(boolean runtimeLoaded, boolean loaderLoaded, boolean uuidManagerSet) {
         this.runtimeLoaded = runtimeLoaded;
         this.loaderLoaded = loaderLoaded;
         this.uuidManagerSet = uuidManagerSet;
     }
 
     PpsStatus(Parcel in) {
-        uuid = in.readString();
         runtimeLoaded = in.readByte() != 0;
         loaderLoaded = in.readByte() != 0;
         uuidManagerSet = in.readByte() != 0;
@@ -43,7 +40,6 @@ public final class PpsStatus implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(uuid);
         dest.writeByte((byte) (runtimeLoaded ? 1 : 0));
         dest.writeByte((byte) (loaderLoaded ? 1 : 0));
         dest.writeByte((byte) (uuidManagerSet ? 1 : 0));

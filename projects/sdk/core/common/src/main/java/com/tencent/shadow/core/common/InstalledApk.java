@@ -34,7 +34,7 @@ public class InstalledApk implements Parcelable {
 
     public final byte[] parcelExtras;
 
-    public InstalledApk(String apkFilePath, String oDexPath, String libraryPath) {
+    public  InstalledApk(String apkFilePath, String oDexPath, String libraryPath) {
         this(apkFilePath, oDexPath, libraryPath, null);
     }
 

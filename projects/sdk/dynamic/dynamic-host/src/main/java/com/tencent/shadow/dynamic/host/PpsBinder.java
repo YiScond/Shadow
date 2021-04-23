@@ -29,8 +29,6 @@ class PpsBinder extends android.os.Binder {
     static final int TRANSACTION_CODE_NO_EXCEPTION = 0;
     static final int TRANSACTION_CODE_FAILED_EXCEPTION = 1;
 
-    static final int TRANSACTION_loadRuntime = (FIRST_CALL_TRANSACTION);
-    static final int TRANSACTION_loadPluginLoader = (FIRST_CALL_TRANSACTION + 1);
     static final int TRANSACTION_setUuidManager = (FIRST_CALL_TRANSACTION + 2);
     static final int TRANSACTION_exit = (FIRST_CALL_TRANSACTION + 3);
     static final int TRANSACTION_getPpsStatus = (FIRST_CALL_TRANSACTION + 4);
@@ -47,32 +45,6 @@ class PpsBinder extends android.os.Binder {
         switch (code) {
             case INTERFACE_TRANSACTION: {
                 reply.writeString(DESCRIPTOR);
-                return true;
-            }
-            case TRANSACTION_loadRuntime: {
-                data.enforceInterface(DESCRIPTOR);
-                String _arg0;
-                _arg0 = data.readString();
-                try {
-                    mPps.loadRuntime(_arg0);
-                    reply.writeInt(TRANSACTION_CODE_NO_EXCEPTION);
-                } catch (FailedException e) {
-                    reply.writeInt(TRANSACTION_CODE_FAILED_EXCEPTION);
-                    e.writeToParcel(reply, 0);
-                }
-                return true;
-            }
-            case TRANSACTION_loadPluginLoader: {
-                data.enforceInterface(DESCRIPTOR);
-                String _arg0;
-                _arg0 = data.readString();
-                try {
-                    mPps.loadPluginLoader(_arg0);
-                    reply.writeInt(TRANSACTION_CODE_NO_EXCEPTION);
-                } catch (FailedException e) {
-                    reply.writeInt(TRANSACTION_CODE_FAILED_EXCEPTION);
-                    e.writeToParcel(reply, 0);
-                }
                 return true;
             }
             case TRANSACTION_setUuidManager: {
@@ -98,7 +70,14 @@ class PpsBinder extends android.os.Binder {
             }
             case TRANSACTION_getPluginLoader: {
                 data.enforceInterface(DESCRIPTOR);
-                IBinder pluginLoader = mPps.getPluginLoader();
+                IBinder pluginLoader = null;
+                try {
+                    pluginLoader = mPps.getPluginLoader();
+                    reply.writeInt(TRANSACTION_CODE_NO_EXCEPTION);
+                } catch (FailedException e) {
+                    reply.writeInt(TRANSACTION_CODE_FAILED_EXCEPTION);
+                    e.writeToParcel(reply,0);
+                }
                 reply.writeNoException();
                 reply.writeStrongBinder(pluginLoader);
                 return true;

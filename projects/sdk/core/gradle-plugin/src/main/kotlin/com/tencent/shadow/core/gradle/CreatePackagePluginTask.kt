@@ -30,14 +30,15 @@ import java.io.FileWriter
 internal fun createPackagePluginTask(project: Project, buildType: PluginBuildType): Task {
     return project.tasks.create("package${buildType.name.capitalize()}Plugin", Zip::class.java) {
         println("PackagePluginTask task run")
-
+/*
         //runtime apk file
         val runtimeApkName: String = buildType.runtimeApkConfig.first
         var runtimeFile: File? = null
         if (runtimeApkName.isNotEmpty()) {
             runtimeFile = ShadowPluginHelper.getRuntimeApkFile(project, buildType, false)
-        }
+        }*/
 
+/*
 
         //loader apk file
         val loaderApkName: String = buildType.loaderApkConfig.first
@@ -45,6 +46,7 @@ internal fun createPackagePluginTask(project: Project, buildType: PluginBuildTyp
         if (loaderApkName.isNotEmpty()) {
             loaderFile = ShadowPluginHelper.getLoaderApkFile(project, buildType, false)
         }
+*/
 
 
         //config file
@@ -62,12 +64,12 @@ internal fun createPackagePluginTask(project: Project, buildType: PluginBuildTyp
         it.group = "plugin"
         it.description = "打包插件"
         it.outputs.upToDateWhen { false }
-        if (runtimeFile != null) {
+       /* if (runtimeFile != null) {
             pluginFiles.add(runtimeFile)
         }
         if (loaderFile != null) {
             pluginFiles.add(loaderFile)
-        }
+        }*/
         it.from(pluginFiles, targetConfigFile)
 
         val packagePlugin = project.extensions.findByName("packagePlugin")
@@ -90,7 +92,8 @@ private fun createGenerateConfigTask(project: Project, buildType: PluginBuildTyp
     val extension = packagePlugin as PackagePluginExtension
 
     //runtime apk build task
-    val runtimeApkName = buildType.runtimeApkConfig.first
+//    val runtimeApkName = buildType.runtimeApkConfig.first
+    val runtimeApkName = ""
     var runtimeTask = ""
     if (runtimeApkName.isNotEmpty()) {
         runtimeTask = buildType.runtimeApkConfig.second
@@ -99,7 +102,8 @@ private fun createGenerateConfigTask(project: Project, buildType: PluginBuildTyp
 
 
     //loader apk build task
-    val loaderApkName = buildType.loaderApkConfig.first
+//    val loaderApkName = buildType.loaderApkConfig.first
+    val loaderApkName = ""
     var loaderTask = ""
     if (loaderApkName.isNotEmpty()) {
         loaderTask = buildType.loaderApkConfig.second

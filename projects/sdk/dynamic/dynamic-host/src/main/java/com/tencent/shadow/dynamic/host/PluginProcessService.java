@@ -64,105 +64,10 @@ public class PluginProcessService extends BasePluginProcessService {
 
     private boolean mRuntimeLoaded = false;
 
-    /**
-     * 当前的Uuid。一旦设置不可修改。
-     */
-    private String mUuid = "";
-
-    private void setUuid(String uuid) throws FailedException {
-        if (mUuid.isEmpty()) {
-            mUuid = uuid;
-        } else if (!mUuid.equals(uuid)) {
-            throw new FailedException(ERROR_CODE_RESET_UUID_EXCEPTION, "已设置过uuid==" + mUuid + "试图设置uuid==" + uuid);
-        }
-    }
 
     private void checkUuidManagerNotNull() throws FailedException {
         if (mUuidManager == null) {
             throw new FailedException(ERROR_CODE_UUID_MANAGER_NULL_EXCEPTION, "mUuidManager == null");
-        }
-    }
-
-    void loadRuntime(String uuid) throws FailedException {
-        checkUuidManagerNotNull();
-        setUuid(uuid);
-        if (mRuntimeLoaded) {
-            throw new FailedException(ERROR_CODE_RELOAD_RUNTIME_EXCEPTION
-                    , "重复调用loadRuntime");
-        }
-        try {
-            if (mLogger.isInfoEnabled()) {
-                mLogger.info("loadRuntime uuid:" + uuid);
-            }
-            InstalledApk installedApk;
-            try {
-                installedApk = mUuidManager.getRuntime(uuid);
-            } catch (RemoteException e) {
-                throw new FailedException(ERROR_CODE_UUID_MANAGER_DEAD_EXCEPTION, e.getMessage());
-            } catch (NotFoundException e) {
-                throw new FailedException(ERROR_CODE_FILE_NOT_FOUND_EXCEPTION, "uuid==" + uuid + "的Runtime没有找到。cause:" + e.getMessage());
-            }
-
-            InstalledApk installedRuntimeApk = new InstalledApk(installedApk.apkFilePath, installedApk.oDexPath, installedApk.libraryPath);
-            boolean loaded = DynamicRuntime.loadRuntime(installedRuntimeApk);
-            if (loaded) {
-                DynamicRuntime.saveLastRuntimeInfo(this, installedRuntimeApk);
-            }
-            mRuntimeLoaded = true;
-        } catch (RuntimeException e) {
-            if (mLogger.isErrorEnabled()) {
-                mLogger.error("loadRuntime发生RuntimeException", e);
-            }
-            throw new FailedException(e);
-        }
-    }
-
-    void loadPluginLoader(String uuid) throws FailedException {
-        if (mLogger.isInfoEnabled()) {
-            mLogger.info("loadPluginLoader uuid:" + uuid + " mPluginLoader:" + mPluginLoader);
-        }
-        checkUuidManagerNotNull();
-        setUuid(uuid);
-        if (mPluginLoader != null) {
-            throw new FailedException(ERROR_CODE_RELOAD_LOADER_EXCEPTION
-                    , "重复调用loadPluginLoader");
-        }
-        try {
-            InstalledApk installedApk;
-            try {
-                installedApk = mUuidManager.getPluginLoader(uuid);
-                if (mLogger.isInfoEnabled()) {
-                    mLogger.info("取出uuid==" + uuid + "的Loader apk:" + installedApk.apkFilePath);
-                }
-            } catch (RemoteException e) {
-                if (mLogger.isErrorEnabled()) {
-                    mLogger.error("获取Loader Apk失败", e);
-                }
-                throw new FailedException(ERROR_CODE_UUID_MANAGER_DEAD_EXCEPTION, e.getMessage());
-            } catch (NotFoundException e) {
-                throw new FailedException(ERROR_CODE_FILE_NOT_FOUND_EXCEPTION, "uuid==" + uuid + "的PluginLoader没有找到。cause:" + e.getMessage());
-            }
-            File file = new File(installedApk.apkFilePath);
-            if (!file.exists()) {
-                throw new FailedException(ERROR_CODE_FILE_NOT_FOUND_EXCEPTION, file.getAbsolutePath() + "文件不存在");
-            }
-
-            PluginLoaderImpl pluginLoader = new LoaderImplLoader().load(installedApk, uuid, getApplicationContext());
-            pluginLoader.setUuidManager(mUuidManager);
-            mPluginLoader = pluginLoader;
-        } catch (RuntimeException e) {
-            if (mLogger.isErrorEnabled()) {
-                mLogger.error("loadPluginLoader发生RuntimeException", e);
-            }
-            throw new FailedException(e);
-        } catch (FailedException e) {
-            throw e;
-        } catch (Exception e) {
-            if (mLogger.isErrorEnabled()) {
-                mLogger.error("loadPluginLoader发生Exception", e);
-            }
-            String msg = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-            throw new FailedException(ERROR_CODE_RUNTIME_EXCEPTION, "加载动态实现失败 cause：" + msg);
         }
     }
 
@@ -192,10 +97,21 @@ public class PluginProcessService extends BasePluginProcessService {
     }
 
     PpsStatus getPpsStatus() {
-        return new PpsStatus(mUuid, mRuntimeLoaded, mPluginLoader != null, mUuidManager != null);
+        return new PpsStatus(mRuntimeLoaded, mPluginLoader != null, mUuidManager != null);
     }
 
-    IBinder getPluginLoader() {
+    IBinder getPluginLoader() throws FailedException {
+        checkUuidManagerNotNull();
+        if (mPluginLoader == null) {
+            PluginLoaderImpl pluginLoader = null;
+            try {
+                pluginLoader = new LoaderImplLoader().load(getApplicationContext());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            pluginLoader.setUuidManager(mUuidManager);
+            mPluginLoader = pluginLoader;
+        }
         return mPluginLoader;
     }
 }

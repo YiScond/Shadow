@@ -7,7 +7,7 @@ import com.tencent.shadow.dynamic.host.PluginLoaderImpl;
 
 public class LoaderFactoryImpl implements LoaderFactory {
     
-    public PluginLoaderImpl buildLoader( String p0,  Context p2) {
-        return new PluginLoaderBinder(new DynamicPluginLoader(p2, p0));
+    public PluginLoaderImpl buildLoader(Context p2) {
+        return new PluginLoaderBinder(new DynamicPluginLoader(p2));
     }
 }

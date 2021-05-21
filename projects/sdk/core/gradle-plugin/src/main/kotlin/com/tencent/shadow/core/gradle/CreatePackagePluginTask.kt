@@ -30,24 +30,6 @@ import java.io.FileWriter
 internal fun createPackagePluginTask(project: Project, buildType: PluginBuildType): Task {
     return project.tasks.create("package${buildType.name.capitalize()}Plugin", Zip::class.java) {
         println("PackagePluginTask task run")
-/*
-        //runtime apk file
-        val runtimeApkName: String = buildType.runtimeApkConfig.first
-        var runtimeFile: File? = null
-        if (runtimeApkName.isNotEmpty()) {
-            runtimeFile = ShadowPluginHelper.getRuntimeApkFile(project, buildType, false)
-        }*/
-
-/*
-
-        //loader apk file
-        val loaderApkName: String = buildType.loaderApkConfig.first
-        var loaderFile: File? = null
-        if (loaderApkName.isNotEmpty()) {
-            loaderFile = ShadowPluginHelper.getLoaderApkFile(project, buildType, false)
-        }
-*/
-
 
         //config file
         val targetConfigFile = File(project.buildDir.absolutePath + "/intermediates/generatePluginConfig/${buildType.name}/config.json")
@@ -64,12 +46,6 @@ internal fun createPackagePluginTask(project: Project, buildType: PluginBuildTyp
         it.group = "plugin"
         it.description = "打包插件"
         it.outputs.upToDateWhen { false }
-       /* if (runtimeFile != null) {
-            pluginFiles.add(runtimeFile)
-        }
-        if (loaderFile != null) {
-            pluginFiles.add(loaderFile)
-        }*/
         it.from(pluginFiles, targetConfigFile)
 
         val packagePlugin = project.extensions.findByName("packagePlugin")

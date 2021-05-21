@@ -212,8 +212,8 @@ public final class PluginServiceManager {
     private final ShadowService newServiceInstance(Intent intent) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
         ComponentName var10000 = intent.getComponent();
         ComponentName componentName = var10000;
-        String businessName = this.mPluginLoader.getMComponentManager().getComponentBusinessName(componentName);
-        String partKey = this.mPluginLoader.getMComponentManager().getComponentPartKey(componentName);
+        String businessName = this.mPluginLoader.getComponentManager().getComponentBusinessName(componentName);
+        String partKey = this.mPluginLoader.getComponentManager().getComponentPartKey(componentName);
         String var8 = componentName.getClassName();
         String className = var8;
         TmpShadowDelegate tmpShadowDelegate = new TmpShadowDelegate();

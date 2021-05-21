@@ -34,38 +34,6 @@ import java.util.Map;
  */
 public class InstalledPlugin implements Serializable {
 
-
-    /**
-     * pluginLoader文件
-     */
-    public Part pluginLoaderFile;
-
-    /**
-     * runtime文件
-     */
-    public Part runtimeFile;
-    /**
-     * 插件文件
-     */
-    public Map<String, PluginPart> plugins = new HashMap<>();
-
-
-    InstalledPlugin() {
-    }
-
-
-    public boolean hasPart(String partKey) {
-        return plugins.containsKey(partKey);
-    }
-
-    public PluginPart getPlugin(String partKey) {
-        return plugins.get(partKey);
-    }
-
-    public Part getPart(String partKey) {
-        return plugins.get(partKey);
-    }
-
     static public class Part implements Serializable {
         final public int pluginType;
         final public File pluginFile;

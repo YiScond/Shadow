@@ -1,6 +1,5 @@
 package com.tencent.shadow.core.loader;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.os.Handler;
@@ -22,7 +21,6 @@ import com.tencent.shadow.core.loader.managers.ComponentManager;
 import com.tencent.shadow.core.loader.managers.PluginContentProviderManager;
 import com.tencent.shadow.core.loader.managers.PluginServiceManager;
 import com.tencent.shadow.core.runtime.ShadowApplication;
-import com.tencent.shadow.core.runtime.ShadowContext;
 import com.tencent.shadow.core.runtime.UriConverter;
 import com.tencent.shadow.core.runtime.container.ContentProviderDelegateProvider;
 import com.tencent.shadow.core.runtime.container.DelegateProvider;
@@ -222,12 +220,7 @@ public abstract class ShadowPluginLoader implements DelegateProvider, DI, Conten
     }
 
     public LoadParameters getLoadParameters(InstalledApk installedApk) {
-        Parcel parcel = Parcel.obtain();
-        parcel.unmarshall(installedApk.parcelExtras, 0, installedApk.parcelExtras.length);
-        parcel.setDataPosition(0);
-        LoadParameters loadParameters = new LoadParameters(parcel);
-        parcel.recycle();
-        return loadParameters;
+        return installedApk.loadParameters;
     }
 
 
@@ -247,9 +240,6 @@ public abstract class ShadowPluginLoader implements DelegateProvider, DI, Conten
         }
     }
 
-    public ComponentManager getMComponentManager() {
-        return mComponentManager;
-    }
 
     public String getDelegateProviderKey() {
         return delegateProviderKey;

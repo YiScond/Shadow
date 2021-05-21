@@ -26,10 +26,10 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class ComponentManager implements PluginComponentLauncher {
-    private final Map packageNameMap = (Map) (new HashMap());
-    private final Map componentMap = (Map) (new HashMap());
-    private final Map pluginInfoMap;
-    private final Map pluginComponentInfoMap;
+    private final Map<String, String> packageNameMap = new HashMap();
+    private final Map<ComponentName, ComponentName> componentMap = new HashMap();
+    private final Map<ComponentName, PluginInfo> pluginInfoMap = new HashMap<>();
+    private final Map<ComponentName, PluginComponentInfo> pluginComponentInfoMap = new HashMap<>();
     private Map application2broadcastInfo;
     private PluginServiceManager mPluginServiceManager;
     private PluginContentProviderManager mPluginContentProviderManager;
@@ -164,7 +164,7 @@ public abstract class ComponentManager implements PluginComponentLauncher {
             while (iterator.hasNext()) {
                 PluginProviderInfo info = iterator.next();
                 ComponentName componentName = new ComponentName(pluginInfo.getPackageName(), info.getClassName());
-                mPluginContentProviderManager.addContentProviderInfo(pluginInfo.getPartKey(),info,onBindContainerContentProvider(componentName));
+                mPluginContentProviderManager.addContentProviderInfo(pluginInfo.getPartKey(), info, onBindContainerContentProvider(componentName));
             }
         }
 
@@ -275,11 +275,6 @@ public abstract class ComponentManager implements PluginComponentLauncher {
 
     public ComponentManager() {
         boolean var1 = false;
-        HashMap var3 = new HashMap();
-        this.pluginInfoMap = (Map) var3;
-        var1 = false;
-        var3 = new HashMap();
-        this.pluginComponentInfoMap = (Map) var3;
         this.application2broadcastInfo = (Map) (new HashMap());
     }
 

@@ -18,6 +18,7 @@ public class LoadApkBloc {
     public static PluginClassLoader loadPlugin(InstalledApk installedApk,
                                                LoadParameters loadParameters,
                                                Map<String, PluginParts> pluginPartsMap) throws LoadApkException {
+
         File apk = new File(installedApk.apkFilePath);
         File odexDir = installedApk.oDexPath == null ? null : new File(installedApk.oDexPath);
         String[] dependsOn = loadParameters.dependsOn;

@@ -18,6 +18,9 @@ android {
 
 dependencies{
     implementation 'com.tencent.shadow.coding:lint'
+
+    compileOnly project(':load-parameters')
+
 }
 
 def jarPackage(buildType) {

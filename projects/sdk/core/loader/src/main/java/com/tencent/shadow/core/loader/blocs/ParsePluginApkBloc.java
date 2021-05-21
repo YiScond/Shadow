@@ -15,9 +15,9 @@ import com.tencent.shadow.core.loader.infos.PluginProviderInfo;
 import com.tencent.shadow.core.loader.infos.PluginServiceInfo;
 
 public class ParsePluginApkBloc {
-    public static PluginInfo parse(PackageInfo packageArchiveInfo, LoadParameters loadParameters, Context hostAppContext) throws ParsePluginApkException {
-        if (!packageArchiveInfo.applicationInfo.packageName.equals(hostAppContext.getPackageName())) {
-            /*
+    public static PluginInfo parse(PackageInfo packageArchiveInfo, LoadParameters loadParameters, Context hostAppContext){
+        /*if (!packageArchiveInfo.applicationInfo.packageName.equals(hostAppContext.getPackageName())) {
+            *//*
             要求插件和宿主包名一致有两方面原因：
             1.正常的构建过程中，aapt会将包名写入到arsc文件中。插件正常安装运行时，如果以
             android.content.Context.getPackageName为参数传给
@@ -33,9 +33,9 @@ public class ParsePluginApkBloc {
             这个烦恼。
 
             我们也可以始终认为Shadow App是宿主的扩展代码，使用是宿主的一部分，那么采用宿主的包名就是理所应当的了。
-             */
+             *//*
             throw new ParsePluginApkException("插件和宿主包名不一致。宿主:" + hostAppContext.getPackageName() + " 插件:" + packageArchiveInfo.applicationInfo.packageName);
-        }
+        }*/
 
         /*
         partKey的作用是用来区分一个Component是来自于哪个插件apk的

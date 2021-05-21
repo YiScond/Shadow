@@ -4,7 +4,7 @@ group 'com.tencent.shadow.dynamic'
 
 android {
     compileSdkVersion project.COMPILE_SDK_VERSION
-     
+
 
     defaultConfig {
         minSdkVersion project.MIN_SDK_VERSION
@@ -27,5 +27,6 @@ dependencies {
     compileOnly 'com.tencent.shadow.core:common'
     implementation 'com.tencent.shadow.core:manager'
     implementation project(':dynamic-loader')
+    compileOnly project(':dynamic-loader-impl')
     compileOnly project(':dynamic-host')
 }

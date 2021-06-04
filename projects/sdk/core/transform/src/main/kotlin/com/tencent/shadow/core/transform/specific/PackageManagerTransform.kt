@@ -30,7 +30,7 @@ import java.util.*
 class PackageManagerTransform : SpecificTransform() {
     companion object {
         const val AndroidPackageManagerClassname = "android.content.pm.PackageManager"
-        const val ShadowAndroidPackageManagerClassname = "com.tencent.shadow.core.runtime.PackageManagerInvokeRedirect"
+        const val ShadowAndroidPackageManagerClassname = "mobi.oneway.sd.core.runtime.PackageManagerInvokeRedirect"
     }
 
     private fun setupPackageManagerTransform(targetMethodName: Array<String>) {

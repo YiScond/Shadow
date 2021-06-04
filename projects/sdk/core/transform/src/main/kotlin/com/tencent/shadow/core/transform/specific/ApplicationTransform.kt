@@ -21,9 +21,9 @@ package com.tencent.shadow.core.transform.specific
 class ApplicationTransform : SimpleRenameTransform(
         mapOf(
                 "android.app.Application"
-                        to "com.tencent.shadow.core.runtime.ShadowApplication"
+                        to "mobi.oneway.sd.core.runtime.ShadowApplication"
                 ,
                 "android.app.Application\$ActivityLifecycleCallbacks"
-                        to "com.tencent.shadow.core.runtime.ShadowActivityLifecycleCallbacks"
+                        to "mobi.oneway.sd.core.runtime.ShadowActivityLifecycleCallbacks"
         )
 )

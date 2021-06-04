@@ -27,8 +27,10 @@ import javassist.CtClass
 
 class TransformManager(ctClassInputMap: Map<CtClass, InputClass>,
                        classPool: ClassPool,
-                       useHostContext: () -> Array<String>
-) : AbstractTransformManager(ctClassInputMap, classPool) {
+                       useHostContext: () -> Array<String>,
+                       disableTransformClasses: Array<String>
+) : AbstractTransformManager(ctClassInputMap, classPool,disableTransformClasses) {
+
 
     override val mTransformList: List<SpecificTransform> = listOf(
             ApplicationTransform(),

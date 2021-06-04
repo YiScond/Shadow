@@ -34,7 +34,7 @@ class PackageItemInfoTransform : SpecificTransform() {
         const val AndroidApplicationInfo = "android.content.pm.ApplicationInfo"
         const val AndroidServiceInfo = "android.content.pm.ServiceInfo"
         const val AndroidPackageItemInfo = "android.content.pm.PackageItemInfo"
-        const val ShadowAndroidPackageItemInfo = "com.tencent.shadow.core.runtime.ShadowPackageItemInfo"
+        const val ShadowAndroidPackageItemInfo = "mobi.oneway.sd.core.runtime.ShadowPackageItemInfo"
     }
 
     private fun setup(

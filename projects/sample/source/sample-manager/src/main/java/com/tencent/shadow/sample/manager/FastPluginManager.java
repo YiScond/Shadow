@@ -134,7 +134,6 @@ public abstract class FastPluginManager extends PluginManagerThatUseDynamicLoade
             bindPluginProcessService(getPluginProcessServiceName(partKey));
             waitServiceConnected(10, TimeUnit.SECONDS);
         }
-        loadRunTime(uuid);
         loadPluginLoader(uuid);
     }
 

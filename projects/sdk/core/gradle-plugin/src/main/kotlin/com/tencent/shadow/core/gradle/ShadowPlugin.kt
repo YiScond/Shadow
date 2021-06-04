@@ -20,13 +20,11 @@ package com.tencent.shadow.core.gradle
 
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
-import com.tencent.shadow.core.gradle.extensions.PackagePluginExtension
 import com.tencent.shadow.core.transform.ShadowTransform
 import com.tencent.shadow.core.transform_kit.AndroidClassPoolBuilder
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.plugins.BasePlugin
 import java.io.File
 import kotlin.reflect.full.declaredFunctions
@@ -52,11 +50,12 @@ class ShadowPlugin : Plugin<Project> {
             baseExtension.registerTransform(ShadowTransform(
                     project,
                     classPoolBuilder,
-                    { shadowExtension.transformConfig.useHostContext }
+                    {shadowExtension.transformConfig.useHostContext},
+                    { shadowExtension.transformConfig.disableTransformClasses }
             ))
         }
 
-        project.extensions.create("packagePlugin", PackagePluginExtension::class.java, project)
+        /*project.extensions.create("packagePlugin", PackagePluginExtension::class.java, project)
 
         project.afterEvaluate {
             val packagePlugin = project.extensions.findByName("packagePlugin")
@@ -75,7 +74,7 @@ class ShadowPlugin : Plugin<Project> {
                     it.description = "打包所有插件"
                 }.dependsOn(tasks)
             }
-        }
+        }*/
     }
 
     open class ShadowExtension {
@@ -87,6 +86,7 @@ class ShadowPlugin : Plugin<Project> {
 
     class TransformConfig {
         var useHostContext: Array<String> = emptyArray()
+        var disableTransformClasses: Array<String> = emptyArray()
     }
 
     fun getBaseExtension(project: Project): BaseExtension {

@@ -28,7 +28,7 @@ import javassist.CtMethod
 class InstrumentationTransform : SpecificTransform() {
     companion object {
         const val AndroidInstrumentationClassname = "android.app.Instrumentation"
-        const val ShadowInstrumentationClassname = "com.tencent.shadow.core.runtime.ShadowInstrumentation"
+        const val ShadowInstrumentationClassname = "mobi.oneway.sd.core.runtime.ShadowInstrumentation"
     }
 
     override fun setup(allInputClass: Set<CtClass>) {

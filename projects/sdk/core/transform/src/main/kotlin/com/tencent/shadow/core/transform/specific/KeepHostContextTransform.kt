@@ -27,7 +27,7 @@ import javassist.CtNewMethod
 
 class KeepHostContextTransform(private val rules: Array<String>) : SpecificTransform() {
     companion object {
-        const val ShadowContextClassName = "com.tencent.shadow.core.runtime.ShadowContext"
+        const val ShadowContextClassName = "mobi.oneway.sd.core.runtime.ShadowContext"
     }
 
     data class Rule(

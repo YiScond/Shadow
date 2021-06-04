@@ -9,6 +9,7 @@ if (!System.getenv().containsKey("ANDROID_HOME")) {
 includeBuild 'projects/sdk/coding'
 includeBuild 'projects/sdk/core'
 includeBuild 'projects/sdk/dynamic'
+includeBuild 'projects/sdk/host-sdk'
 
 includeTest()
 includeSample()

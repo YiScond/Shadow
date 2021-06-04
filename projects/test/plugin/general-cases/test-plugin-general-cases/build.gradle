@@ -27,6 +27,7 @@ buildscript {
 apply plugin: 'com.tencent.shadow.plugin'
 
 
+/*
 shadow {
     transform {
 //        useHostContext = ['abc']
@@ -117,4 +118,4 @@ shadow {
         compactVersion = [1, 2, 3]
         uuidNickName = "1.1.5"
     }
-}
+}*/

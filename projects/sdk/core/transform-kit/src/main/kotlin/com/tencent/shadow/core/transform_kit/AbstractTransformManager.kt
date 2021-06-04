@@ -22,24 +22,35 @@ import javassist.ClassPool
 import javassist.CtClass
 
 abstract class AbstractTransformManager(ctClassInputMap: Map<CtClass, InputClass>,
-                                        private val classPool: ClassPool
+                                        private val classPool: ClassPool,
+                                        private val disableTransformClasses: Array<String>
 ) {
     private val allInputClass = ctClassInputMap.keys
+
 
     abstract val mTransformList: List<SpecificTransform>
 
     fun setupAll() {
         mTransformList.forEach {
             it.mClassPool = classPool
-            it.setup(allInputClass)
+            it.setup(allInputClass.filterDisableTransformClasses())
         }
     }
 
     fun fireAll() {
         mTransformList.flatMap { it.list }.forEach { transform ->
-            transform.filter(allInputClass).forEach {
+            transform.filter(allInputClass.filterDisableTransformClasses()).forEach {
                 transform.transform(it)
             }
         }
+    }
+
+    /**
+     * 过滤掉不需要 transform 的Class类
+     */
+    fun Set<CtClass>.filterDisableTransformClasses(): Set<CtClass> {
+        return this.filter {
+            it.name !in disableTransformClasses
+        }.toSet()
     }
 }

@@ -59,12 +59,14 @@ tasks.whenTaskAdded { task ->
 apply plugin: 'com.tencent.shadow.plugin'
 
 
+/*
 shadow {
     transform {
 //        useHostContext = ['abc']
     }
 
-    packagePlugin {
+    */
+/*packagePlugin {
         pluginTypes {
             debug {
                 loaderApkConfig = new Tuple2('sample-loader-debug.apk', ':sample-loader:assembleDebug')
@@ -123,5 +125,6 @@ shadow {
         version = 4
         compactVersion = [1, 2, 3]
         uuidNickName = "1.1.5"
-    }
-}
+    }*//*
+
+}*/

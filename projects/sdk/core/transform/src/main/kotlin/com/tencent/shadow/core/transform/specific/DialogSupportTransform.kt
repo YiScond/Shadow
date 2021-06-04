@@ -26,9 +26,9 @@ import javassist.bytecode.Descriptor
 
 class DialogSupportTransform : SpecificTransform() {
     companion object {
-        const val ShadowActivityClassname = "com.tencent.shadow.core.runtime.ShadowActivity"
+        const val ShadowActivityClassname = "mobi.oneway.sd.core.runtime.ShadowActivity"
         const val AndroidDialogClassname = "android.app.Dialog"
-        const val DialogSupportTransformClassname = "com.tencent.shadow.core.runtime.ShadowDialogSupport"
+        const val DialogSupportTransformClassname = "mobi.oneway.sd.core.runtime.ShadowDialogSupport"
     }
 
     override fun setup(allInputClass: Set<CtClass>) {
@@ -40,7 +40,7 @@ class DialogSupportTransform : SpecificTransform() {
         val getOwnerActivityMethod = androidDialog.getDeclaredMethod("getOwnerActivity")
 
         //appClass中的Activity都已经被改名为ShadowActivity了．所以要把方法签名也先改一下．
-        val shadowActivitySig = "Lcom/tencent/shadow/core/runtime/ShadowActivity;"
+        val shadowActivitySig = "Lmobi/oneway/sd/core/runtime/ShadowActivity;"
         setOwnerActivityMethod.methodInfo.descriptor = "($shadowActivitySig)V"
         getOwnerActivityMethod.methodInfo.descriptor = "()$shadowActivitySig"
 

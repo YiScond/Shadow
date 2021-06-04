@@ -14,8 +14,8 @@ task buildSdk() {
     dependsOn gradle.includedBuild('dynamic').task(':dynamic-loader:jarReleasePackage')
     dependsOn gradle.includedBuild('dynamic').task(':dynamic-loader-impl:assembleRelease')
     dependsOn gradle.includedBuild('dynamic').task(':dynamic-manager:assembleRelease')
-    dependsOn gradle.includedBuild('dynamic').task(':dynamic-host-multi-loader-ext:jarReleasePackage')
-    dependsOn gradle.includedBuild('dynamic').task(':dynamic-manager-multi-loader-ext:assembleRelease')
+
+    dependsOn gradle.includedBuild('host-sdk').task(':sd:assembleRelease')
 }
 
 task lintSdk() {
@@ -29,8 +29,6 @@ task lintSdk() {
     dependsOn gradle.includedBuild('dynamic').task(':dynamic-host:lint')
     dependsOn gradle.includedBuild('dynamic').task(':dynamic-loader-impl:lint')
     dependsOn gradle.includedBuild('dynamic').task(':dynamic-manager:lint')
-    dependsOn gradle.includedBuild('dynamic').task(':dynamic-host-multi-loader-ext:lint')
-    dependsOn gradle.includedBuild('dynamic').task(':dynamic-manager-multi-loader-ext:lint')
 }
 
 task jvmTestSdk() {
@@ -108,6 +106,8 @@ def coreGroupId = 'com.tencent.shadow.core'
 def corePath = 'projects/sdk/core'
 def dynamicGroupId = 'com.tencent.shadow.dynamic'
 def dynamicPath = 'projects/sdk/dynamic'
+def sdkHostGroupId = 'mobi.oneway.sd'
+def sdkHostPath = 'projects/sdk/host-sdk'
 
 publishing {
     publications {
@@ -125,8 +125,9 @@ publishing {
                 dependencies.append(getDependencyNode('compile', 'com.android.tools.build', 'gradle', build_gradle_version))
                 dependencies.append(getDependencyNode('compile', coreGroupId, 'transform-kit', publicationVersion))
                 dependencies.append(getDependencyNode('compile', coreGroupId, 'transform', publicationVersion))
-                dependencies.append(getDependencyNode('compile', coreGroupId, 'runtime', publicationVersion))
-                dependencies.append(getDependencyNode('compile', coreGroupId, 'activity-container', publicationVersion))
+//                dependencies.append(getDependencyNode('compile', coreGroupId, 'runtime', publicationVersion))
+//                dependencies.append(getDependencyNode('compile', coreGroupId, 'activity-container', publicationVersion))
+                dependencies.append(getDependencyNode('compile', sdkHostGroupId, 'sd', publicationVersion))
 
                 def scm = root.appendNode('scm')
                 setScm(scm)
@@ -293,7 +294,7 @@ publishing {
                 setScm(scm)
             }
         }
-        dynamicHostMultiLoaderExt(MavenPublication) {
+        /*dynamicHostMultiLoaderExt(MavenPublication) {
             groupId dynamicGroupId
             artifactId 'host-multi-loader-ext'
             version publicationVersion
@@ -310,7 +311,7 @@ publishing {
                 setScm(scm)
             }
         }
-
+*/
         dynamicLoader(MavenPublication) {
             groupId dynamicGroupId
             artifactId 'loader'
@@ -365,7 +366,7 @@ publishing {
             }
         }
 
-        dynamicManagerMultiLoaderExt(MavenPublication) {
+        /*dynamicManagerMultiLoaderExt(MavenPublication) {
             groupId dynamicGroupId
             artifactId 'manager-multi-loader-ext'
             version publicationVersion
@@ -380,6 +381,21 @@ publishing {
                 dependencies.append(getDependencyNode('compile', dynamicGroupId, 'manager', publicationVersion))
                 dependencies.append(getDependencyNode('provided', coreGroupId, 'common', publicationVersion))
                 dependencies.append(getDependencyNode('provided', dynamicGroupId, 'host-multi-loader-ext', publicationVersion))
+
+                def scm = root.appendNode('scm')
+                setScm(scm)
+            }
+        }*/
+
+        sd(MavenPublication) {
+            groupId sdkHostGroupId
+            artifactId 'sd'
+            version publicationVersion
+            artifact("$sdkHostPath/sd/build/outputs/aar/sd-release.aar")
+            artifact sourceJar("sd", "$sdkHostPath/sd")
+
+            pom.withXml {
+                def root = asNode()
 
                 def scm = root.appendNode('scm')
                 setScm(scm)
@@ -435,8 +451,9 @@ setGeneratePomFileAndDepends('transformKit')
 setGeneratePomFileAndDepends('transformKitTest')
 setGeneratePomFileAndDepends('transform')
 setGeneratePomFileAndDepends('dynamicHost')
-setGeneratePomFileAndDepends('dynamicHostMultiLoaderExt')
+//setGeneratePomFileAndDepends('dynamicHostMultiLoaderExt')
 setGeneratePomFileAndDepends('dynamicLoader')
 setGeneratePomFileAndDepends('dynamicLoaderImpl')
 setGeneratePomFileAndDepends('dynamicManager')
-setGeneratePomFileAndDepends('dynamicManagerMultiLoaderExt')
+setGeneratePomFileAndDepends('sd')
+//setGeneratePomFileAndDepends('dynamicManagerMultiLoaderExt')

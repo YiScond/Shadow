@@ -27,7 +27,8 @@ import org.gradle.api.Project
 class ShadowTransform(
         project: Project,
         classPoolBuilder: ClassPoolBuilder,
-        private val useHostContext: () -> Array<String>
+        private val useHostContext: () -> Array<String>,
+        private val disableTransformClasses: () -> Array<String>
 ) : AbstractTransform(project, classPoolBuilder) {
 
     lateinit var _mTransformManager: TransformManager
@@ -37,7 +38,10 @@ class ShadowTransform(
 
     override fun beforeTransform(invocation: TransformInvocation) {
         super.beforeTransform(invocation)
-        _mTransformManager = TransformManager(mCtClassInputMap, classPool, useHostContext)
+        disableTransformClasses().forEach {
+            System.out.println("disableTransformClass -> ${it}")
+        }
+        _mTransformManager = TransformManager(mCtClassInputMap, classPool, useHostContext, disableTransformClasses())
     }
 
     override fun getName(): String = "ShadowTransform"

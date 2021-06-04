@@ -27,14 +27,14 @@ import javassist.bytecode.Descriptor
 class FragmentSupportTransform : SpecificTransform() {
     companion object {
         const val ObjectClassname = "java.lang.Object"
-        const val ShadowActivityClassname = "com.tencent.shadow.core.runtime.ShadowActivity"
+        const val ShadowActivityClassname = "mobi.oneway.sd.core.runtime.ShadowActivity"
         const val AndroidActivityClassname = "android.app.Activity"
         const val AndroidFragmentClassname = "android.app.Fragment"
         const val AndroidIntentClassname = "android.content.Intent"
         const val AndroidBundleClassname = "android.os.Bundle"
         const val AndroidContextClassname = "android.content.Context"
         const val AndroidAttributeSetClassname = "android.util.AttributeSet"
-        const val ShadowFragmentSupportClassname = "com.tencent.shadow.core.runtime.ShadowFragmentSupport"
+        const val ShadowFragmentSupportClassname = "mobi.oneway.sd.core.runtime.ShadowFragmentSupport"
     }
 
     private fun CtClass.isFragment(): Boolean = isClassOf(AndroidFragmentClassname)
@@ -66,10 +66,10 @@ class FragmentSupportTransform : SpecificTransform() {
         mClassPool.importPackage("android.content")
         mClassPool.importPackage("android.util")
         mClassPool.importPackage("android.os")
-        mClassPool.importPackage("com.tencent.shadow.core.runtime")
+        mClassPool.importPackage("mobi.oneway.sd.core.runtime")
 
         //appClass中的Activity都已经被改名为ShadowActivity了．所以要把方法签名也先改一下．
-        getActivityMethod.methodInfo.descriptor = "()Lcom/tencent/shadow/core/runtime/ShadowActivity;"
+        getActivityMethod.methodInfo.descriptor = "()Lmobi/oneway/sd/core/runtime/ShadowActivity;"
 
         val startActivityMethod1 = androidFragment.getMethod("startActivity",
                 Descriptor.ofMethod(CtClass.voidType,
@@ -234,7 +234,7 @@ class FragmentSupportTransform : SpecificTransform() {
                     val codeConverter = CodeConverterExtension()
                     var superOnAttachActivity: CtMethod = androidFragment.getDeclaredMethod("onAttach", arrayOf(androidActivity))
                     superOnAttachActivity = CtNewMethod.copy(superOnAttachActivity, androidFragment, null)
-                    superOnAttachActivity.methodInfo.descriptor = "(Lcom/tencent/shadow/core/runtime/ShadowActivity;)V"
+                    superOnAttachActivity.methodInfo.descriptor = "(Lmobi/oneway/sd/core/runtime/ShadowActivity;)V"
                     codeConverter.redirectMethodCall(superOnAttachActivity, superOnAttach)
                     try {
                         ctClass.instrument(codeConverter)
@@ -410,7 +410,7 @@ class FragmentSupportTransform : SpecificTransform() {
                     val codeConverter = CodeConverterExtension()
                     var superOnInflateActivity: CtMethod = androidFragment.getDeclaredMethod("onInflate", arrayOf(androidActivity, androidAttributeSet, androidBundle))
                     superOnInflateActivity = CtNewMethod.copy(superOnInflateActivity, androidFragment, null)
-                    superOnInflateActivity.methodInfo.descriptor = "(Lcom/tencent/shadow/core/runtime/ShadowActivity;Landroid/util/AttributeSet;Landroid/os/Bundle;)V"
+                    superOnInflateActivity.methodInfo.descriptor = "(Lmobi/oneway/sd/core/runtime/ShadowActivity;Landroid/util/AttributeSet;Landroid/os/Bundle;)V"
                     codeConverter.redirectMethodCall(superOnInflateActivity, superOnInflate)
                     try {
                         ctClass.instrument(codeConverter)

@@ -27,7 +27,7 @@ class PendingIntentTransform : SpecificTransform() {
 
     companion object {
         const val AndroidPendingIntentClassname = "android.app.PendingIntent"
-        const val ShadowPendingIntentClassname = "com.tencent.shadow.core.runtime.ShadowPendingIntent"
+        const val ShadowPendingIntentClassname = "mobi.oneway.sd.core.runtime.ShadowPendingIntent"
     }
 
     val codeConverter = CodeConverter()

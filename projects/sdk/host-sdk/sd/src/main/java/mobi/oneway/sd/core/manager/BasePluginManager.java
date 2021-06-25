@@ -20,8 +20,7 @@ package mobi.oneway.sd.core.manager;
 
 import android.content.Context;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
+import android.text.TextUtils;
 
 import mobi.oneway.sd.core.common.Logger;
 import mobi.oneway.sd.core.common.LoggerFactory;
@@ -31,42 +30,38 @@ import mobi.oneway.sd.core.manager.installplugin.InstallPluginException;
 import mobi.oneway.sd.core.manager.installplugin.InstalledPlugin;
 import mobi.oneway.sd.core.manager.installplugin.InstalledType;
 import mobi.oneway.sd.core.manager.installplugin.ODexBloc;
-import mobi.oneway.sd.core.manager.installplugin.PluginFileManager;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class BasePluginManager {
+
     private static final Logger mLogger = LoggerFactory.getLogger(BasePluginManager.class);
+    protected Map<String, String> pluginPathMap;
     /*
      * 宿主的context对象
      */
     public Context mHostContext;
 
-    /**
-     * 插件文件管理器
-     */
-    private PluginFileManager mPluginFileManager;
-
-
-    /**
-     * UI线程的handler
-     */
-    protected Handler mUiHandler = new Handler(Looper.getMainLooper());
-
 
     public BasePluginManager(Context context) {
         this.mHostContext = context.getApplicationContext();
-        this.mPluginFileManager = new PluginFileManager(mHostContext.getFilesDir());
+        pluginPathMap = new HashMap<>();
     }
 
 
     protected InstalledPlugin.Part getPluginPartByPartKey(String partKey) {
-        File pluginFile = mPluginFileManager.getPluginFile(partKey);
-        File pluginLibFile = AppCacheFolderManager.getLibDir(mPluginFileManager.getAppDir(), partKey);
-        File pluginOdexFile = AppCacheFolderManager.getODexDir(mPluginFileManager.getAppDir(), partKey);
-        if (pluginFile != null && pluginLibFile != null && pluginOdexFile != null) {
-            InstalledPlugin.Part part = new InstalledPlugin.PluginPart(InstalledType.TYPE_PLUGIN, partKey, pluginFile, pluginOdexFile, pluginLibFile, null, null);
-            return part;
+        String pluginPath = pluginPathMap.get(partKey);
+        if (!TextUtils.isEmpty(pluginPath)) {
+            File pluginFile = new File(pluginPath);
+            File pluginParentFile = pluginFile.getParentFile();
+            File pluginLibFile = AppCacheFolderManager.getLibDir(pluginParentFile, partKey);
+            File pluginOdexFile = AppCacheFolderManager.getODexDir(pluginParentFile, partKey);
+            if (pluginFile != null && pluginLibFile != null && pluginOdexFile != null) {
+                InstalledPlugin.Part part = new InstalledPlugin.PluginPart(InstalledType.TYPE_PLUGIN, partKey, pluginFile, pluginOdexFile, pluginLibFile, null, null);
+                return part;
+            }
         }
         throw new RuntimeException("没有找到Part partKey:" + partKey);
     }
@@ -78,7 +73,7 @@ public abstract class BasePluginManager {
     public final void oDexPlugin(File apkFile) throws InstallPluginException {
         try {
             String pluginName = apkFile.getName();
-            File root = mPluginFileManager.getAppDir();
+            File root = apkFile.getParentFile();
             File oDexDir = AppCacheFolderManager.getODexDir(root, pluginName);
             ODexBloc.oDexPlugin(apkFile, oDexDir, AppCacheFolderManager.getODexCopiedFile(oDexDir, pluginName));
         } catch (InstallPluginException e) {
@@ -98,7 +93,7 @@ public abstract class BasePluginManager {
     public final void extractSo(File apkFile) throws InstallPluginException {
         try {
             String pluginName = apkFile.getName();
-            File root = mPluginFileManager.getAppDir();
+            File root = apkFile.getParentFile();
             String filter = "lib/" + getAbi() + "/";
             File soDir = AppCacheFolderManager.getLibDir(root, pluginName);
             CopySoBloc.copySo(apkFile, soDir
@@ -109,29 +104,6 @@ public abstract class BasePluginManager {
             }
             throw e;
         }
-    }
-
-    public File getPluginFile(String partKey) {
-        return mPluginFileManager.getPluginFile(partKey);
-    }
-
-
-    private boolean deletePart(InstalledPlugin.Part part) {
-        boolean suc = true;
-        if (!part.pluginFile.delete()) {
-            suc = false;
-        }
-        if (part.oDexDir != null) {
-            if (!part.oDexDir.delete()) {
-                suc = false;
-            }
-        }
-        if (part.libraryDir != null) {
-            if (!part.libraryDir.delete()) {
-                suc = false;
-            }
-        }
-        return suc;
     }
 
 

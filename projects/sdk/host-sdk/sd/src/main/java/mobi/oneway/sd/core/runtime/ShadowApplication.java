@@ -161,7 +161,7 @@ public class ShadowApplication extends ShadowContext {
         mHostApplication = (Application) hostAppContext;
     }
 
-    public void setBroadcasts(Map<String, List<String>> broadcast){
+    public void setBroadcasts(Map<String, List<String>> broadcast) {
         mBroadcasts = broadcast;
     }
 
@@ -171,5 +171,9 @@ public class ShadowApplication extends ShadowContext {
 
     public void setAppComponentFactory(ShadowAppComponentFactory factory) {
         mAppComponentFactory = factory;
+    }
+
+    public Context getHostContext() {
+        return mHostApplication;
     }
 }

@@ -1,9 +1,12 @@
 package mobi.oneway.sd.core.manager;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import java.io.File;
 import java.util.Map;
+import mobi.oneway.sd.core.loader.managers.ComponentManager;
 
 
 public class ShadowPluginManager extends BaseDynamicPluginManager {
@@ -31,12 +34,15 @@ public class ShadowPluginManager extends BaseDynamicPluginManager {
     /**
      * 加载插件
      *
-     * @param partKey
+     * @param pluginFile
      */
-    public void loadPlugin(String partKey, String[] whiteList) throws Exception {
+    public void loadPlugin(File pluginFile, String[] whiteList) throws Exception {
 
-        extractSo(getPluginFile(partKey));
-        oDexPlugin(getPluginFile(partKey));
+        String partKey = pluginFile.getName();
+        pluginPathMap.put(partKey, pluginFile.getPath());
+
+        extractSo(pluginFile);
+        oDexPlugin(pluginFile);
 
         Map map = dynamicPluginLoader.getLoadedPlugin();
         if (!map.containsKey(partKey)) {
@@ -48,9 +54,6 @@ public class ShadowPluginManager extends BaseDynamicPluginManager {
         }
     }
 
-    public String createPartKey(String pluginName, String pluginHash) {
-        return pluginName + "_" + pluginHash;
-    }
 
     /**
      * 获取插件的classloader
@@ -73,20 +76,23 @@ public class ShadowPluginManager extends BaseDynamicPluginManager {
         mHostContext.startActivity(pluginIntent);
     }
 
-    public void startPluginService(Intent intent) {
-        dynamicPluginLoader.startPluginService(intent);
+    public ComponentName startPluginService(Intent intent) {
+        return dynamicPluginLoader.startPluginService(intent);
     }
 
-    public void stopPluginService(Intent intent) {
-        dynamicPluginLoader.stopPluginService(intent);
+    public boolean stopPluginService(Intent intent) {
+        return dynamicPluginLoader.stopPluginService(intent);
     }
 
-    public void bindPluginService(Intent intent, ServiceConnection connection, int flags) {
-        dynamicPluginLoader.bindPluginService(intent, connection, flags);
+    public boolean bindPluginService(Intent intent, ServiceConnection connection, int flags) {
+        return dynamicPluginLoader.bindPluginService(intent, connection, flags);
     }
 
     public void unBindPluginService(ServiceConnection connection) {
         dynamicPluginLoader.unbindService(connection);
     }
 
+    public ComponentManager getComponentManager() {
+        return dynamicPluginLoader.getComponentManager();
+    }
 }

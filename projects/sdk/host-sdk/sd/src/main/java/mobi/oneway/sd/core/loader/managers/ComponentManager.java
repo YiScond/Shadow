@@ -87,7 +87,7 @@ public abstract class ComponentManager implements PluginComponentLauncher {
     }
 
 
-    public Pair startService(ShadowContext context, Intent service) {
+    public Pair<Boolean, ComponentName> startService(ShadowContext context, Intent service) {
         if (this.isPluginComponent(service)) {
             PluginServiceManager var10000 = this.mPluginServiceManager;
             ComponentName component = var10000.startPluginService(service);
@@ -100,7 +100,7 @@ public abstract class ComponentManager implements PluginComponentLauncher {
     }
 
 
-    public Pair stopService(ShadowContext context, Intent intent) {
+    public Pair<Boolean, Boolean> stopService(ShadowContext context, Intent intent) {
         if (this.isPluginComponent(intent)) {
             PluginServiceManager var10000 = this.mPluginServiceManager;
             boolean stopped = var10000.stopPluginService(intent);
@@ -111,7 +111,7 @@ public abstract class ComponentManager implements PluginComponentLauncher {
     }
 
 
-    public Pair bindService(ShadowContext context, Intent intent, ServiceConnection conn, int flags) {
+    public Pair<Boolean, Boolean> bindService(ShadowContext context, Intent intent, ServiceConnection conn, int flags) {
         Pair var5;
         if (this.isPluginComponent(intent)) {
             PluginServiceManager var10000 = this.mPluginServiceManager;
@@ -125,10 +125,14 @@ public abstract class ComponentManager implements PluginComponentLauncher {
     }
 
 
-    public Pair unbindService(ShadowContext context, ServiceConnection conn) {
+    public Pair<Boolean, Object> unbindService(ShadowContext context, ServiceConnection conn) {
         PluginServiceManager var10000 = this.mPluginServiceManager;
         var10000.unbindPluginService(conn);
-        return new Pair(true, null);
+        if (mPluginServiceManager.unbindPluginService(conn)) {
+            return new Pair<>(true, null);
+        } else {
+            return new Pair<>(false, null);
+        }
     }
 
 
@@ -182,14 +186,14 @@ public abstract class ComponentManager implements PluginComponentLauncher {
 
 
     public final String getComponentBusinessName(ComponentName componentName) {
-        PluginInfo var10000 = (PluginInfo) this.pluginInfoMap.get(componentName);
-        return var10000 != null ? var10000.getBusinessName() : null;
+        PluginInfo pluginInfo = getPluginInfo(componentName);
+        return pluginInfo != null ? pluginInfo.getBusinessName() : null;
     }
 
 
     public final String getComponentPartKey(ComponentName componentName) {
-        PluginInfo var10000 = (PluginInfo) this.pluginInfoMap.get(componentName);
-        return var10000 != null ? var10000.getPartKey() : null;
+        PluginInfo pluginInfo = getPluginInfo(componentName);
+        return pluginInfo != null ? pluginInfo.getPartKey() : null;
     }
 
     public final void setPluginServiceManager(PluginServiceManager pluginServiceManager) {
@@ -200,7 +204,7 @@ public abstract class ComponentManager implements PluginComponentLauncher {
         this.mPluginContentProviderManager = pluginContentProviderManager;
     }
 
-    private final boolean isPluginComponent(Intent $this$isPluginComponent) {
+    public final boolean isPluginComponent(Intent $this$isPluginComponent) {
         ComponentName var10000 = $this$isPluginComponent.getComponent();
         if (var10000 != null) {
             ComponentName component = var10000;
@@ -212,34 +216,26 @@ public abstract class ComponentManager implements PluginComponentLauncher {
         }
     }
 
-    private final Intent toActivityContainerIntent(Intent $this$toActivityContainerIntent) {
+    private final Intent toActivityContainerIntent(Intent toActivityContainerIntent) {
         Bundle bundleForPluginLoader = new Bundle();
-        Map var4 = this.pluginComponentInfoMap;
-        ComponentName var5 = $this$toActivityContainerIntent.getComponent();
-        boolean var6 = false;
-        Object var10000 = var4.get(var5);
-        PluginComponentInfo pluginComponentInfo = (PluginComponentInfo) var10000;
-        bundleForPluginLoader.putParcelable("CM_ACTIVITY_INFO", (Parcelable) pluginComponentInfo);
-        return this.toContainerIntent($this$toActivityContainerIntent, bundleForPluginLoader);
+        ComponentName pluginComponentName = toActivityContainerIntent.getComponent();
+        PluginComponentInfo pluginComponentInfo = getPluginComponentInfo(pluginComponentName);
+        bundleForPluginLoader.putParcelable("CM_ACTIVITY_INFO", pluginComponentInfo);
+        return this.toContainerIntent(toActivityContainerIntent, bundleForPluginLoader);
     }
 
-    private final Intent toContainerIntent(Intent $this$toContainerIntent, Bundle bundleForPluginLoader) {
-        ComponentName var10000 = $this$toContainerIntent.getComponent();
-        ComponentName component = var10000;
-        String var11 = component.getClassName();
-        String className = var11;
-        Object var12 = this.packageNameMap.get(className);
-        String packageName = (String) var12;
-        $this$toContainerIntent.setComponent(new ComponentName(packageName, className));
-        var12 = this.componentMap.get(component);
-        ComponentName containerComponent = (ComponentName) var12;
-        var12 = this.pluginInfoMap.get(component);
-        String businessName = ((PluginInfo) var12).getBusinessName();
-        var12 = this.pluginInfoMap.get(component);
-        String partKey = ((PluginInfo) var12).getPartKey();
-        Bundle pluginExtras = $this$toContainerIntent.getExtras();
-        $this$toContainerIntent.replaceExtras((Bundle) null);
-        Intent containerIntent = new Intent($this$toContainerIntent);
+    private final Intent toContainerIntent(Intent toContainerIntent, Bundle bundleForPluginLoader) {
+        ComponentName component = toContainerIntent.getComponent();
+        String className = component.getClassName();
+        String packageName = this.packageNameMap.get(className);
+        toContainerIntent.setComponent(new ComponentName(packageName, className));
+        ComponentName containerComponent = getContainerComponent(component);
+        PluginInfo pluginInfo = getPluginInfo(component);
+        String businessName = pluginInfo.getBusinessName();
+        String partKey = pluginInfo.getPartKey();
+        Bundle pluginExtras = toContainerIntent.getExtras();
+        toContainerIntent.replaceExtras((Bundle) null);
+        Intent containerIntent = new Intent(toContainerIntent);
         containerIntent.setComponent(containerComponent);
         bundleForPluginLoader.putString("CM_CLASS_NAME", className);
         bundleForPluginLoader.putString("CM_PACKAGE_NAME", packageName);
@@ -278,6 +274,69 @@ public abstract class ComponentManager implements PluginComponentLauncher {
         this.application2broadcastInfo = (Map) (new HashMap());
     }
 
+
+    /**
+     * 获取插件componentName 对应宿主壳Activity的componentName
+     *
+     * @param pluginComponentName
+     * @return
+     */
+    private ComponentName getContainerComponent(ComponentName pluginComponentName) {
+        ComponentName containerComponent = componentMap.get(pluginComponentName);
+        //当插件包名和宿主包名不一致的时候
+        if (containerComponent == null) {
+            String pluginActivityClassName = pluginComponentName.getClassName();
+            for (Map.Entry<ComponentName, ComponentName> entry : componentMap.entrySet()) {
+                if (entry.getKey().getClassName().equals(pluginActivityClassName)) {
+                    containerComponent = entry.getValue();
+                    break;
+                }
+            }
+        }
+
+        return containerComponent;
+    }
+
+    /**
+     * 获取插件componentName 对应插件的pluginInfo 插件信息
+     *
+     * @param pluginComponentName
+     * @return
+     */
+    private PluginInfo getPluginInfo(ComponentName pluginComponentName) {
+        PluginInfo pluginInfo = pluginInfoMap.get(pluginComponentName);
+        //当插件包名和宿主包名不一致的时候
+        if (pluginInfo == null) {
+            String pluginActivityClassName = pluginComponentName.getClassName();
+            for (Map.Entry<ComponentName, PluginInfo> entry : pluginInfoMap.entrySet()) {
+                if (entry.getKey().getClassName().equals(pluginActivityClassName)) {
+                    pluginInfo = entry.getValue();
+                    break;
+                }
+            }
+        }
+        return pluginInfo;
+    }
+
+    /**
+     * 获取插件componentName 对应插件的PluginComponentInfo 插件信息
+     *
+     * @param pluginComponentName
+     * @return
+     */
+    private PluginComponentInfo getPluginComponentInfo(ComponentName pluginComponentName) {
+        PluginComponentInfo pluginComponentInfo = pluginComponentInfoMap.get(pluginComponentName);
+        //当插件包名和宿主包名不一致的时候
+        if (pluginComponentInfo == null) {
+            String pluginActivityClassName = pluginComponentName.getClassName();
+            for (Map.Entry<ComponentName, PluginComponentInfo> entry : pluginComponentInfoMap.entrySet()) {
+                if (entry.getKey().getClassName().equals(pluginActivityClassName)) {
+                    pluginComponentInfo = entry.getValue();
+                }
+            }
+        }
+        return pluginComponentInfo;
+    }
 
     public static final class BroadcastInfo {
 

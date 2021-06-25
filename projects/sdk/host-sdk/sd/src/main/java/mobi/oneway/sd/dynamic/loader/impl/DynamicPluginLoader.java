@@ -10,6 +10,7 @@ import android.os.Looper;
 import mobi.oneway.sd.core.common.InstalledApk;
 import mobi.oneway.sd.core.loader.ShadowPluginLoader;
 import mobi.oneway.sd.core.loader.infos.PluginParts;
+import mobi.oneway.sd.core.loader.managers.ComponentManager;
 import mobi.oneway.sd.core.runtime.container.ContentProviderDelegateProvider;
 import mobi.oneway.sd.core.runtime.container.ContentProviderDelegateProviderHolder;
 import mobi.oneway.sd.core.runtime.container.DelegateProviderHolder;
@@ -21,10 +22,21 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 
 public final class DynamicPluginLoader {
+
     private final ShadowPluginLoader mPluginLoader;
     private Context mContext;
     private PluginManager mPluginManager;
     private final Handler mUiHandler;
+
+
+    public DynamicPluginLoader(Context hostContext) {
+        this.mUiHandler = new Handler(Looper.getMainLooper());
+        this.mPluginLoader = new CustomePluginLoader(hostContext);
+        DelegateProviderHolder.setDelegateProvider((String) this.mPluginLoader.getDelegateProviderKey(), this.mPluginLoader);
+        ContentProviderDelegateProviderHolder.setContentProviderDelegateProvider((ContentProviderDelegateProvider) ((ContentProviderDelegateProvider) this.mPluginLoader));
+        mPluginLoader.onCreate();
+        this.mContext = hostContext;
+    }
 
 
     public final void setPluginManager(PluginManager p0) {
@@ -71,6 +83,11 @@ public final class DynamicPluginLoader {
 
     public final Intent convertActivityIntent(Intent pluginActivityIntent) {
         return this.mPluginLoader.getComponentManager().convertPluginActivityIntent(pluginActivityIntent);
+    }
+
+
+    public ComponentManager getComponentManager() {
+        return mPluginLoader.getComponentManager();
     }
 
     /*
@@ -186,12 +203,4 @@ public final class DynamicPluginLoader {
         return mPluginLoader.getPluginServiceManager().bindPluginService(pluginServiceIntent, serviceConnection, flags);
     }
 
-    public DynamicPluginLoader(Context hostContext) {
-        this.mUiHandler = new Handler(Looper.getMainLooper());
-        this.mPluginLoader = new CustomePluginLoader(hostContext);
-        DelegateProviderHolder.setDelegateProvider((String) this.mPluginLoader.getDelegateProviderKey(), this.mPluginLoader);
-        ContentProviderDelegateProviderHolder.setContentProviderDelegateProvider((ContentProviderDelegateProvider) ((ContentProviderDelegateProvider) this.mPluginLoader));
-        mPluginLoader.onCreate();
-        this.mContext = hostContext;
-    }
 }

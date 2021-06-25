@@ -22,14 +22,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public final class PluginServiceManager {
-    private final HashMap mServiceBinderMap;
-    private final HashMap mServiceConnectionMap;
-    private final HashMap mConnectionIntentMap;
-    private final HashMap mAliveServicesMap;
-    private final HashSet mServiceStartByStartServiceSet;
-    private final HashSet mServiceStopCalledMap;
+    private final Map<ComponentName, IBinder> mServiceBinderMap;
+    private final Map<ComponentName, HashSet<ServiceConnection>> mServiceConnectionMap;
+    private final Map<ServiceConnection, Intent> mConnectionIntentMap;
+    private final Map<ComponentName, ShadowService> mAliveServicesMap;
+    private final Set<ComponentName> mServiceStartByStartServiceSet;
+    private final Set<ComponentName> mServiceStopCalledMap;
     private final ShadowPluginLoader mPluginLoader;
     private final Context mHostContext;
     private static int startId;
@@ -106,16 +107,14 @@ public final class PluginServiceManager {
         return true;
     }
 
-    public final void unbindPluginService(ServiceConnection connection) {
+    public final boolean unbindPluginService(ServiceConnection connection) {
         Map var4 = (Map) this.mServiceConnectionMap;
-        boolean var5 = false;
+        boolean result = false;
         Iterator var3 = var4.entrySet().iterator();
 
         while (var3.hasNext()) {
             Entry var2 = (Entry) var3.next();
-            boolean var7 = false;
             ComponentName componentName = (ComponentName) var2.getKey();
-            var7 = false;
             HashSet connSet = (HashSet) var2.getValue();
             if (connSet.contains(connection)) {
                 connSet.remove(connection);
@@ -128,10 +127,14 @@ public final class PluginServiceManager {
                     }
                 }
 
+                result = true;
+
                 this.destroyServiceIfNeed(componentName);
                 break;
             }
         }
+
+        return result;
 
     }
 

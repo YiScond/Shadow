@@ -33,6 +33,12 @@ import java.util.Map;
 
 public class ShadowActivity extends PluginActivity {
 
+    /**
+     * 外部Activity 只能用于包裹类去使用
+     * 一般情况下不建议使用
+     */
+    private Object wrapperHostActivity;
+
     @Override
     public void setContentView(int layoutResID) {
         if ("merge".equals(XmlPullParserUtil.getLayoutStartTagName(getResources(), layoutResID))) {
@@ -44,6 +50,22 @@ public class ShadowActivity extends PluginActivity {
             View inflate = LayoutInflater.from(this).inflate(layoutResID, null);
             hostActivityDelegator.setContentView(inflate);
         }
+    }
+
+    /**
+     * 直接获取外部Activity 只能用于包裹类去使用
+     * 一般情况下不建议使用
+     */
+    public Object getWrapperHostActivity() {
+        return wrapperHostActivity;
+    }
+
+    /**
+     * 直接设置外部Activity 只能用于包裹类去使用
+     * 一般情况下不建议使用
+     */
+    public void setWrapperHostActivity(Object wrapperHostActivity) {
+        this.wrapperHostActivity = wrapperHostActivity;
     }
 
     @Override

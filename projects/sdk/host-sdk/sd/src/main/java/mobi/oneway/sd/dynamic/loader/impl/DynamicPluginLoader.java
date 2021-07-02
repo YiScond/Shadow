@@ -45,11 +45,11 @@ public final class DynamicPluginLoader {
         }
     }
 
-    public final void loadPlugin(String partKey, String[] hostWhiteList) {
+    public final void loadPlugin(String partKey, String[] hostWhiteList,String[] dependsOn) {
         PluginManager pluginManager = this.mPluginManager;
 
         try {
-            InstalledApk installedApk2 = pluginManager.getPlugin(partKey, hostWhiteList);
+            InstalledApk installedApk2 = pluginManager.getPlugin(partKey, hostWhiteList,dependsOn);
             Future future = this.mPluginLoader.loadPlugin(installedApk2);
             future.get();
         } catch (Exception e) {

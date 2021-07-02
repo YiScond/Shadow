@@ -22,6 +22,7 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 
+import mobi.oneway.sd.core.common.AndroidLoggerFactory;
 import mobi.oneway.sd.core.common.Logger;
 import mobi.oneway.sd.core.common.LoggerFactory;
 import mobi.oneway.sd.core.manager.installplugin.AppCacheFolderManager;
@@ -37,7 +38,7 @@ import java.util.Map;
 
 public abstract class BasePluginManager {
 
-    private static final Logger mLogger = LoggerFactory.getLogger(BasePluginManager.class);
+    private Logger mLogger;
     protected Map<String, String> pluginPathMap;
     /*
      * 宿主的context对象
@@ -46,8 +47,10 @@ public abstract class BasePluginManager {
 
 
     public BasePluginManager(Context context) {
+        LoggerFactory.setILoggerFactory(new AndroidLoggerFactory());
         this.mHostContext = context.getApplicationContext();
         pluginPathMap = new HashMap<>();
+        mLogger = LoggerFactory.getLogger(BasePluginManager.class);
     }
 
 

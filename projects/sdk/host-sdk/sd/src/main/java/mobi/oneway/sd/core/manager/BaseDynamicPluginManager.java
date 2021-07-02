@@ -29,7 +29,7 @@ abstract public class BaseDynamicPluginManager extends BasePluginManager impleme
     }
 
     @Override
-    public InstalledApk getPlugin(String partKey, String[] hostWhiteList) throws FailedException, NotFoundException {
+    public InstalledApk getPlugin(String partKey, String[] hostWhiteList,String[] dependsOn) throws FailedException, NotFoundException {
         try {
             InstalledPlugin.Part part;
             try {
@@ -38,7 +38,6 @@ abstract public class BaseDynamicPluginManager extends BasePluginManager impleme
                 throw new NotFoundException("partKey==" + partKey + "的Plugin找不到");
             }
             String businessName = part instanceof InstalledPlugin.PluginPart ? ((InstalledPlugin.PluginPart) part).businessName : null;
-            String[] dependsOn = part instanceof InstalledPlugin.PluginPart ? ((InstalledPlugin.PluginPart) part).dependsOn : null;
             LoadParameters loadParameters
                     = new LoadParameters(businessName, partKey, dependsOn, hostWhiteList);
 

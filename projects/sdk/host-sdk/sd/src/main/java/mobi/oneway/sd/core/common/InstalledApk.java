@@ -35,11 +35,6 @@ public class InstalledApk {
     public LoadParameters loadParameters;
 
 
-
-    public  InstalledApk(String apkFilePath, String oDexPath, String libraryPath) {
-        this(apkFilePath, oDexPath, libraryPath, null);
-    }
-
     public InstalledApk(String apkFilePath, String oDexPath, String libraryPath, LoadParameters loadParameters) {
         this.apkFilePath = apkFilePath;
         this.oDexPath = oDexPath;

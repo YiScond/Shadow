@@ -31,12 +31,36 @@ public class ShadowPluginManager extends BaseDynamicPluginManager {
         return instance;
     }
 
+
+    /**
+     * 加载插件
+     *
+     * @param pluginFile 插件文件
+     * @throws Exception
+     */
+    public void loadPlugin(File pluginFile) throws Exception {
+        loadPlugin(pluginFile, null);
+    }
+
+    /**
+     * 加载插件
+     *
+     * @param pluginFile 插件文件
+     * @param whiteList  宿主类白名单 插件可以使用的宿主类
+     * @throws Exception
+     */
+    public void loadPlugin(File pluginFile, String[] whiteList) throws Exception {
+        loadPlugin(pluginFile, whiteList, null);
+    }
+
     /**
      * 加载插件
      *
      * @param pluginFile
+     * @param whiteList  宿主类白名单 插件可以使用的宿主类
+     * @param dependsOn  被依赖的其他插件
      */
-    public void loadPlugin(File pluginFile, String[] whiteList) throws Exception {
+    public void loadPlugin(File pluginFile, String[] whiteList, String[] dependsOn) throws Exception {
 
         String partKey = pluginFile.getName();
         pluginPathMap.put(partKey, pluginFile.getPath());
@@ -46,7 +70,7 @@ public class ShadowPluginManager extends BaseDynamicPluginManager {
 
         Map map = dynamicPluginLoader.getLoadedPlugin();
         if (!map.containsKey(partKey)) {
-            dynamicPluginLoader.loadPlugin(partKey, whiteList);
+            dynamicPluginLoader.loadPlugin(partKey, whiteList, dependsOn);
         }
         Boolean isCall = (Boolean) map.get(partKey);
         if (isCall == null || !isCall) {

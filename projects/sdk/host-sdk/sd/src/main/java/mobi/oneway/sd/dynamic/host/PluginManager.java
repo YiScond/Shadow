@@ -21,5 +21,5 @@ package mobi.oneway.sd.dynamic.host;
 import mobi.oneway.sd.core.common.InstalledApk;
 
 public interface PluginManager {
-    InstalledApk getPlugin(String partKey,String[] hostWhiteList) throws NotFoundException, FailedException;
+    InstalledApk getPlugin(String partKey,String[] hostWhiteList,String[] dependsOn) throws NotFoundException, FailedException;
 }

@@ -51,7 +51,7 @@ public class CustomComponentManager extends ComponentManager {
     public ContainerProviderInfo onBindContainerContentProvider(ComponentName pluginContentProvider) {
         return new ContainerProviderInfo(
                 mobi.oneway.sd.core.runtime.container.PluginContainerContentProvider.class.getName(),
-                "mobi.oneway.sd.contentprovider.authority.dynamic");
+                context.getPackageName() + "contentprovider.authority.dynamic");
     }
 
     @Override

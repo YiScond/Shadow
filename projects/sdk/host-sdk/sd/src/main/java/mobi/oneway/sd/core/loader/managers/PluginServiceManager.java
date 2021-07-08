@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Pair;
 
 import mobi.oneway.sd.core.loader.ShadowPluginLoader;
 import mobi.oneway.sd.core.loader.classloaders.PluginClassLoader;
@@ -102,15 +103,15 @@ public final class PluginServiceManager {
         return execInMainThread(new execCallback<Boolean>() {
             @Override
             public Boolean onResult() {
-                return delegate.bindPluginService(intent,conn,flags);
+                return delegate.bindPluginService(intent, conn, flags);
             }
         });
     }
 
-    public final boolean unbindPluginService(ServiceConnection connection) {
-        return execInMainThread(new execCallback<Boolean>() {
+    public final Pair<Boolean,Boolean> unbindPluginService(ServiceConnection connection) {
+        return execInMainThread(new execCallback<Pair<Boolean,Boolean>>() {
             @Override
-            public Boolean onResult() {
+            public Pair<Boolean, Boolean> onResult() {
                 return delegate.unbindPluginService(connection);
             }
         });
@@ -206,9 +207,10 @@ public final class PluginServiceManager {
             return true;
         }
 
-        public final boolean unbindPluginService(ServiceConnection connection) {
+        public final Pair<Boolean, Boolean> unbindPluginService(ServiceConnection connection) {
             Map var4 = (Map) this.mServiceConnectionMap;
-            boolean result = false;
+            boolean isPluginService = false;
+            boolean isPluginServiceStopped = false;
             Iterator var3 = var4.entrySet().iterator();
 
             while (var3.hasNext()) {
@@ -216,6 +218,7 @@ public final class PluginServiceManager {
                 ComponentName componentName = (ComponentName) var2.getKey();
                 HashSet connSet = (HashSet) var2.getValue();
                 if (connSet.contains(connection)) {
+                    isPluginService = true;
                     connSet.remove(connection);
                     Intent intent = (Intent) this.mConnectionIntentMap.remove(connection);
                     if (connSet.size() == 0) {
@@ -226,14 +229,12 @@ public final class PluginServiceManager {
                         }
                     }
 
-                    result = true;
-
-                    this.destroyServiceIfNeed(componentName);
+                    isPluginServiceStopped = destroyServiceIfNeed(componentName);
                     break;
                 }
             }
 
-            return result;
+            return new Pair<Boolean, Boolean>(isPluginService, isPluginServiceStopped);
 
         }
 

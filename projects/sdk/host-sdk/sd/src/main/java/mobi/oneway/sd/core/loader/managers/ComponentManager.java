@@ -126,13 +126,10 @@ public abstract class ComponentManager implements PluginComponentLauncher {
 
 
     public Pair<Boolean, Object> unbindService(ShadowContext context, ServiceConnection conn) {
-        PluginServiceManager var10000 = this.mPluginServiceManager;
-        var10000.unbindPluginService(conn);
-        if (mPluginServiceManager.unbindPluginService(conn)) {
-            return new Pair<>(true, null);
-        } else {
-            return new Pair<>(false, null);
-        }
+        return Pair.create(
+                mPluginServiceManager.unbindPluginService(conn).first,
+                null
+        );
     }
 
 

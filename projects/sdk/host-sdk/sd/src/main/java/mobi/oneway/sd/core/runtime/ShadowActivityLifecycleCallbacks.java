@@ -26,19 +26,65 @@ import mobi.oneway.sd.core.runtime.container.PluginContainerActivity;
 
 public interface ShadowActivityLifecycleCallbacks {
 
+    void onActivityPreCreated(ShadowActivity activity, Bundle savedInstanceState);
+
     void onActivityCreated(ShadowActivity activity, Bundle savedInstanceState);
+
+    void onActivityPostCreated(ShadowActivity activity, Bundle savedInstanceState);
+
+
+    void onActivityPreStarted(ShadowActivity activity);
+
 
     void onActivityStarted(ShadowActivity activity);
 
+
+    void onActivityPostStarted(ShadowActivity activity);
+
+
+    void onActivityPreResumed(ShadowActivity activity);
+
+
     void onActivityResumed(ShadowActivity activity);
+
+
+    void onActivityPostResumed(ShadowActivity activity);
+
+
+    void onActivityPrePaused(ShadowActivity activity);
+
 
     void onActivityPaused(ShadowActivity activity);
 
+
+    void onActivityPostPaused(ShadowActivity activity);
+
+
+    void onActivityPreStopped(ShadowActivity activity);
+
+
     void onActivityStopped(ShadowActivity activity);
+
+
+    void onActivityPostStopped(ShadowActivity activity);
+
+
+    void onActivityPreSaveInstanceState(ShadowActivity activity, Bundle outState);
+
 
     void onActivitySaveInstanceState(ShadowActivity activity, Bundle outState);
 
+
+    void onActivityPostSaveInstanceState(ShadowActivity activity, Bundle outState);
+
+
+    void onActivityPreDestroyed(ShadowActivity activity);
+
+
     void onActivityDestroyed(ShadowActivity activity);
+
+
+    void onActivityPostDestroyed(ShadowActivity activity);
 
     class Wrapper implements Application.ActivityLifecycleCallbacks {
 
@@ -111,6 +157,174 @@ public interface ShadowActivityLifecycleCallbacks {
             final ShadowActivity pluginActivity = getPluginActivity(activity);
             if (checkOwnerActivity(pluginActivity)) {
                 shadowActivityLifecycleCallbacks.onActivityDestroyed(pluginActivity);
+            }
+        }
+
+        @Override
+        public void onActivityPreCreated(Activity activity, Bundle savedInstanceState) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPreCreated(pluginActivity, savedInstanceState);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPostCreated(Activity activity, Bundle savedInstanceState) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPostCreated(pluginActivity, savedInstanceState);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPreStarted(Activity activity) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPreStarted(pluginActivity);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPostStarted(Activity activity) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPostStarted(pluginActivity);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPreResumed(Activity activity) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPreResumed(pluginActivity);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPostResumed(Activity activity) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPostResumed(pluginActivity);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPrePaused(Activity activity) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPrePaused(pluginActivity);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPostPaused(Activity activity) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPostPaused(pluginActivity);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPreStopped(Activity activity) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPreStopped(pluginActivity);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPostStopped(Activity activity) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPostStopped(pluginActivity);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPreSaveInstanceState(Activity activity, Bundle outState) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPreSaveInstanceState(pluginActivity, outState);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPostSaveInstanceState(Activity activity, Bundle outState) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPostSaveInstanceState(pluginActivity, outState);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPreDestroyed(Activity activity) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPreDestroyed(pluginActivity);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
+            }
+        }
+
+        @Override
+        public void onActivityPostDestroyed(Activity activity) {
+            final ShadowActivity pluginActivity = getPluginActivity(activity);
+            if (checkOwnerActivity(pluginActivity)) {
+                try {
+                    shadowActivityLifecycleCallbacks.onActivityPostDestroyed(pluginActivity);
+                } catch (AbstractMethodError ignored) {
+                    //兼容Java8接口default方法
+                }
             }
         }
 

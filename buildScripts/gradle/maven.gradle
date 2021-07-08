@@ -109,12 +109,15 @@ def dynamicPath = 'projects/sdk/dynamic'
 def sdkHostGroupId = 'mobi.oneway.sd'
 def sdkHostPath = 'projects/sdk/host-sdk'
 
+def gradlePluginVersion = "1.0.0"
+def sdkHostVersion = "1.0.0"
+
 publishing {
     publications {
         gradlePlugin(MavenPublication) {
             groupId coreGroupId
             artifactId 'gradle-plugin'
-            version publicationVersion
+            version gradlePluginVersion
             artifact("$corePath/gradle-plugin/build/libs/gradle-plugin.jar")
             artifact sourceJar("gradlePlugin", "$corePath/gradle-plugin")
 
@@ -123,17 +126,17 @@ publishing {
                 def dependencies = root.appendNode('dependencies')
 //                dependencies.append(getDependencyNode('compile', 'org.jetbrains.kotlin', 'kotlin-stdlib-jdk7', kotlin_version))
                 dependencies.append(getDependencyNode('compile', 'com.android.tools.build', 'gradle', build_gradle_version))
-                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform-kit', publicationVersion))
-                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform', publicationVersion))
+                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform-kit', gradlePluginVersion))
+                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform', gradlePluginVersion))
 //                dependencies.append(getDependencyNode('compile', coreGroupId, 'runtime', publicationVersion))
 //                dependencies.append(getDependencyNode('compile', coreGroupId, 'activity-container', publicationVersion))
-                dependencies.append(getDependencyNode('compile', sdkHostGroupId, 'sd', publicationVersion))
+                dependencies.append(getDependencyNode('compile', sdkHostGroupId, 'sd', sdkHostVersion))
 
                 def scm = root.appendNode('scm')
                 setScm(scm)
             }
         }
-        common(MavenPublication) {
+        /*common(MavenPublication) {
             groupId coreGroupId
             artifactId 'common'
             version publicationVersion
@@ -145,9 +148,9 @@ publishing {
                 def scm = root.appendNode('scm')
                 setScm(scm)
             }
-        }
+        }*/
 
-        loadParameters(MavenPublication) {
+        /*loadParameters(MavenPublication) {
             groupId coreGroupId
             artifactId 'load-parameters'
             version publicationVersion
@@ -159,9 +162,9 @@ publishing {
                 def scm = root.appendNode('scm')
                 setScm(scm)
             }
-        }
+        }*/
 
-        coreLoader(MavenPublication) {
+        /*coreLoader(MavenPublication) {
             groupId coreGroupId
             artifactId 'loader'
             version publicationVersion
@@ -225,12 +228,12 @@ publishing {
                 def scm = root.appendNode('scm')
                 setScm(scm)
             }
-        }
+        }*/
 
         transformKit(MavenPublication) {
             groupId coreGroupId
             artifactId 'transform-kit'
-            version publicationVersion
+            version gradlePluginVersion
             artifact("$corePath/transform-kit/build/libs/transform-kit.jar")
             artifact sourceJar("transformKit", "$corePath/transform-kit")
 
@@ -246,7 +249,7 @@ publishing {
             }
         }
 
-        transformKitTest(MavenPublication) {
+        /*transformKitTest(MavenPublication) {
             groupId coreGroupId
             artifactId 'transform-kit-test'
             version publicationVersion
@@ -260,25 +263,25 @@ publishing {
                 def scm = root.appendNode('scm')
                 setScm(scm)
             }
-        }
+        }*/
 
         transform(MavenPublication) {
             groupId coreGroupId
             artifactId 'transform'
-            version publicationVersion
+            version gradlePluginVersion
             artifact("$corePath/transform/build/libs/transform.jar")
             artifact sourceJar("transform", "$corePath/transform")
 
             pom.withXml {
                 def root = asNode()
                 def dependencies = root.appendNode('dependencies')
-                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform-kit', publicationVersion))
+                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform-kit', gradlePluginVersion))
 
                 def scm = root.appendNode('scm')
                 setScm(scm)
             }
         }
-        dynamicHost(MavenPublication) {
+        /*dynamicHost(MavenPublication) {
             groupId dynamicGroupId
             artifactId 'host'
             version publicationVersion
@@ -293,7 +296,7 @@ publishing {
                 def scm = root.appendNode('scm')
                 setScm(scm)
             }
-        }
+        }*/
         /*dynamicHostMultiLoaderExt(MavenPublication) {
             groupId dynamicGroupId
             artifactId 'host-multi-loader-ext'
@@ -312,7 +315,7 @@ publishing {
             }
         }
 */
-        dynamicLoader(MavenPublication) {
+        /*dynamicLoader(MavenPublication) {
             groupId dynamicGroupId
             artifactId 'loader'
             version publicationVersion
@@ -364,7 +367,7 @@ publishing {
                 def scm = root.appendNode('scm')
                 setScm(scm)
             }
-        }
+        }*/
 
         /*dynamicManagerMultiLoaderExt(MavenPublication) {
             groupId dynamicGroupId
@@ -390,7 +393,7 @@ publishing {
         sd(MavenPublication) {
             groupId sdkHostGroupId
             artifactId 'sd'
-            version publicationVersion
+            version sdkHostVersion
             artifact("$sdkHostPath/sd/build/outputs/aar/sd-release.aar")
             artifact sourceJar("sd", "$sdkHostPath/sd")
 
@@ -441,19 +444,19 @@ publishing {
 }
 
 setGeneratePomFileAndDepends('gradlePlugin')
-setGeneratePomFileAndDepends('common')
-setGeneratePomFileAndDepends('loadParameters')
-setGeneratePomFileAndDepends('coreLoader')
-setGeneratePomFileAndDepends('coreManager')
-setGeneratePomFileAndDepends('runtime')
-setGeneratePomFileAndDepends('activityContainer')
+//setGeneratePomFileAndDepends('common')
+//setGeneratePomFileAndDepends('loadParameters')
+//setGeneratePomFileAndDepends('coreLoader')
+//setGeneratePomFileAndDepends('coreManager')
+//setGeneratePomFileAndDepends('runtime')
+//setGeneratePomFileAndDepends('activityContainer')
 setGeneratePomFileAndDepends('transformKit')
-setGeneratePomFileAndDepends('transformKitTest')
+//setGeneratePomFileAndDepends('transformKitTest')
 setGeneratePomFileAndDepends('transform')
-setGeneratePomFileAndDepends('dynamicHost')
+//setGeneratePomFileAndDepends('dynamicHost')
 //setGeneratePomFileAndDepends('dynamicHostMultiLoaderExt')
-setGeneratePomFileAndDepends('dynamicLoader')
-setGeneratePomFileAndDepends('dynamicLoaderImpl')
-setGeneratePomFileAndDepends('dynamicManager')
+//setGeneratePomFileAndDepends('dynamicLoader')
+//setGeneratePomFileAndDepends('dynamicLoaderImpl')
+//setGeneratePomFileAndDepends('dynamicManager')
 setGeneratePomFileAndDepends('sd')
 //setGeneratePomFileAndDepends('dynamicManagerMultiLoaderExt')

@@ -14,8 +14,8 @@ import mobi.oneway.sd.dynamic.loader.impl.DynamicPluginLoader;
 
 
 abstract public class BaseDynamicPluginManager extends BasePluginManager implements PluginManager {
-    private static final Logger mLogger = LoggerFactory.getLogger(BaseDynamicPluginManager.class);
 
+    private  Logger mLogger;
     /**
      * 插件加载器
      */
@@ -23,6 +23,7 @@ abstract public class BaseDynamicPluginManager extends BasePluginManager impleme
 
     public BaseDynamicPluginManager(Context context) {
         super(context);
+        mLogger = LoggerFactory.getLogger(BaseDynamicPluginManager.class);
         //初始化插件加载器
         dynamicPluginLoader = new DynamicPluginLoader(context);
         dynamicPluginLoader.setPluginManager(this);

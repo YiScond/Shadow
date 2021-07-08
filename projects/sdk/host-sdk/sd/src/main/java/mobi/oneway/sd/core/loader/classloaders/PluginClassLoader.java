@@ -52,13 +52,13 @@ public class PluginClassLoader extends BaseDexClassLoader {
             if (clazz == null) {
                 ClassNotFoundException suppressed = null;
                 try {
-                    clazz = findClass(className);
+                    clazz = specialClassLoader.loadClass(className);
                 } catch (ClassNotFoundException e) {
                     suppressed = e;
                 }
                 if (clazz == null) {
                     try {
-                        clazz = specialClassLoader.loadClass(className);
+                        clazz = findClass(className);
                     } catch (ClassNotFoundException e) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                             e.addSuppressed(suppressed);

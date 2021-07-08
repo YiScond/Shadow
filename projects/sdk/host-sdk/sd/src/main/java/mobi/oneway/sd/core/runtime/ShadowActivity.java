@@ -18,7 +18,6 @@
 
 package mobi.oneway.sd.core.runtime;
 
-import android.app.Application;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -27,9 +26,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ShadowActivity extends PluginActivity {
 
@@ -138,32 +134,6 @@ public class ShadowActivity extends PluginActivity {
             throw new IllegalArgumentException("ID does not reference a View inside this Activity");
         }
         return view;
-    }
-
-    final private Map<ShadowActivityLifecycleCallbacks,
-            Application.ActivityLifecycleCallbacks>
-            mActivityLifecycleCallbacksMap = new HashMap<>();
-
-    public void registerActivityLifecycleCallbacks(
-            ShadowActivityLifecycleCallbacks callback) {
-        synchronized (mActivityLifecycleCallbacksMap) {
-            final ShadowActivityLifecycleCallbacks.Wrapper wrapper
-                    = new ShadowActivityLifecycleCallbacks.Wrapper(callback, this);
-            mActivityLifecycleCallbacksMap.put(callback, wrapper);
-            hostActivityDelegator.registerActivityLifecycleCallbacks(wrapper);
-        }
-    }
-
-    public void unregisterActivityLifecycleCallbacks(
-            ShadowActivityLifecycleCallbacks callback) {
-        synchronized (mActivityLifecycleCallbacksMap) {
-            final Application.ActivityLifecycleCallbacks activityLifecycleCallbacks
-                    = mActivityLifecycleCallbacksMap.get(callback);
-            if (activityLifecycleCallbacks != null) {
-                hostActivityDelegator.unregisterActivityLifecycleCallbacks(activityLifecycleCallbacks);
-                mActivityLifecycleCallbacksMap.remove(callback);
-            }
-        }
     }
 
     @Override

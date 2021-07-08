@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
@@ -19,6 +20,7 @@ import mobi.oneway.sd.core.runtime.GeneratedPluginActivity;
 import mobi.oneway.sd.core.runtime.MixResources;
 import mobi.oneway.sd.core.runtime.PluginActivity;
 import mobi.oneway.sd.core.runtime.ShadowActivity;
+import mobi.oneway.sd.core.runtime.ShadowActivityLifecycleCallbacks;
 import mobi.oneway.sd.core.runtime.ShadowLayoutInflater;
 import mobi.oneway.sd.core.runtime.container.HostActivityDelegate;
 import mobi.oneway.sd.core.runtime.container.HostActivityDelegator;
@@ -137,6 +139,9 @@ public class ShadowActivityDelegate extends GeneratedShadowActivityDelegate impl
             }
             if (pluginSavedInstanceState != null) {
                 pluginSavedInstanceState.setClassLoader(getMPluginClassLoader());
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                notifyPluginActivityPreCreated(pluginActivity, pluginSavedInstanceState);
             }
             pluginActivity.onCreate(pluginSavedInstanceState);
             mPluginActivityCreated = true;
@@ -278,5 +283,12 @@ public class ShadowActivityDelegate extends GeneratedShadowActivityDelegate impl
     public void recreate() {
         mRecreateCalled = true;
         mHostActivityDelegator.superRecreate();
+    }
+
+    private void notifyPluginActivityPreCreated(ShadowActivity pluginActivity, Bundle pluginSavedInstanceState) {
+        ShadowActivityLifecycleCallbacks.Holder.notifyPluginActivityPreCreated(
+                pluginActivity,
+                pluginSavedInstanceState
+        );
     }
 }

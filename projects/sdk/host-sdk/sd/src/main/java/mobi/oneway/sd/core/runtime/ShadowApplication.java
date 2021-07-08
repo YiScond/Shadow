@@ -50,9 +50,17 @@ public class ShadowApplication extends ShadowContext {
         return this;
     }
 
-    final private Map<ShadowActivityLifecycleCallbacks,
-            Application.ActivityLifecycleCallbacks>
-            mActivityLifecycleCallbacksMap = new HashMap<>();
+    private ShadowActivityLifecycleCallbacks.Holder lifecycleCallbacksHolder;
+
+    public void registerActivityLifecycleCallbacks(
+            ShadowActivityLifecycleCallbacks callback) {
+        lifecycleCallbacksHolder.registerActivityLifecycleCallbacks(this, callback);
+    }
+
+    public void unregisterActivityLifecycleCallbacks(
+            ShadowActivityLifecycleCallbacks callback) {
+        lifecycleCallbacksHolder.unregisterActivityLifecycleCallbacks(callback);
+    }
 
     public void onCreate() {
 
@@ -122,29 +130,6 @@ public class ShadowApplication extends ShadowContext {
         mHostApplication.unregisterComponentCallbacks(callback);
     }
 
-
-    public void registerActivityLifecycleCallbacks(ShadowActivityLifecycleCallbacks callback) {
-        synchronized (mActivityLifecycleCallbacksMap) {
-            final ShadowActivityLifecycleCallbacks.Wrapper wrapper
-                    = new ShadowActivityLifecycleCallbacks.Wrapper(callback, this);
-            mActivityLifecycleCallbacksMap.put(callback, wrapper);
-            mHostApplication.registerActivityLifecycleCallbacks(wrapper);
-        }
-    }
-
-
-    public void unregisterActivityLifecycleCallbacks(ShadowActivityLifecycleCallbacks callback) {
-        synchronized (mActivityLifecycleCallbacksMap) {
-            final Application.ActivityLifecycleCallbacks activityLifecycleCallbacks
-                    = mActivityLifecycleCallbacksMap.get(callback);
-            if (activityLifecycleCallbacks != null) {
-                mHostApplication.unregisterActivityLifecycleCallbacks(activityLifecycleCallbacks);
-                mActivityLifecycleCallbacksMap.remove(callback);
-            }
-        }
-    }
-
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void registerOnProvideAssistDataListener(Application.OnProvideAssistDataListener callback) {
         mHostApplication.registerOnProvideAssistDataListener(callback);
@@ -159,6 +144,8 @@ public class ShadowApplication extends ShadowContext {
     public void setHostApplicationContextAsBase(Context hostAppContext) {
         super.attachBaseContext(hostAppContext);
         mHostApplication = (Application) hostAppContext;
+        lifecycleCallbacksHolder
+                = new ShadowActivityLifecycleCallbacks.Holder(mHostApplication);
     }
 
     public void setBroadcasts(Map<String, List<String>> broadcast) {

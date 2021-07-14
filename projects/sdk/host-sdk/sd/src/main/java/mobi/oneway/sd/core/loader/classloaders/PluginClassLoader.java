@@ -45,7 +45,13 @@ public class PluginClassLoader extends BaseDexClassLoader {
             return loaderClassLoader.loadClass(className);
         } else if (inPackage(className, allHostWhiteList)
                 || (Build.VERSION.SDK_INT < 28 && className.startsWith("org.apache.http"))) {//Android 9.0以下的系统里面带有http包，走系统的不走本地的) {
-            return super.loadClass(className, resolve);
+            //当插件和宿主拥有同个类时 优先从插件加载 插件加载不到 再从宿主加载
+            Class cl = loadFromCurLoader(className);
+            if (cl != null) {
+                return cl;
+            } else {
+                return super.loadClass(className, resolve);
+            }
         } else {
             Class clazz = findLoadedClass(className);
 
@@ -114,5 +120,17 @@ public class PluginClassLoader extends BaseDexClassLoader {
         } else {
             return className.substring(0, index);
         }
+    }
+
+    private Class<?> loadFromCurLoader(String className) {
+        Class clazz = findLoadedClass(className);
+        if (clazz == null) {
+            try {
+                clazz = findClass(className);
+            } catch (ClassNotFoundException e) {
+
+            }
+        }
+        return clazz;
     }
 }

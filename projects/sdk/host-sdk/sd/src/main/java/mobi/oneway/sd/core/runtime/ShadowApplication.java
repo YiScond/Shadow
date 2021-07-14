@@ -163,4 +163,8 @@ public class ShadowApplication extends ShadowContext {
     public Context getHostContext() {
         return mHostApplication;
     }
+
+    public String getProcessName(){
+        return mHostApplication.getProcessName();
+    }
 }

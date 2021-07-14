@@ -109,8 +109,8 @@ def dynamicPath = 'projects/sdk/dynamic'
 def sdkHostGroupId = 'mobi.oneway.sd'
 def sdkHostPath = 'projects/sdk/host-sdk'
 
-def gradlePluginVersion = "1.0.0"
-def sdkHostVersion = "1.0.0"
+def gradlePluginVersion = "1.0.1"
+def sdkHostVersion = "1.0.1"
 
 publishing {
     publications {

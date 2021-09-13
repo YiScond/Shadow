@@ -18,6 +18,7 @@
 
 package mobi.oneway.sd.core.runtime;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.content.BroadcastReceiver;
@@ -66,15 +67,15 @@ public class ShadowApplication extends ShadowContext {
 
         isCallOnCreate = true;
 
-        for (Map.Entry<String, List<String>> entry: mBroadcasts.entrySet()){
+        for (Map.Entry<String, List<String>> entry : mBroadcasts.entrySet()) {
             try {
                 Class<?> clazz = mPluginClassLoader.loadClass(entry.getKey());
                 BroadcastReceiver receiver = ((BroadcastReceiver) clazz.newInstance());
                 mAppComponentFactory.instantiateReceiver(mPluginClassLoader, entry.getKey(), null);
 
                 IntentFilter intentFilter = new IntentFilter();
-                for (String action:entry.getValue()
-                     ) {
+                for (String action : entry.getValue()
+                ) {
                     intentFilter.addAction(action);
                 }
                 registerReceiver(receiver, intentFilter);
@@ -164,7 +165,8 @@ public class ShadowApplication extends ShadowContext {
         return mHostApplication;
     }
 
-    public String getProcessName(){
-        return mHostApplication.getProcessName();
+    @SuppressLint("NewApi")
+    public static String getProcessName() {
+        return Application.getProcessName();
     }
 }

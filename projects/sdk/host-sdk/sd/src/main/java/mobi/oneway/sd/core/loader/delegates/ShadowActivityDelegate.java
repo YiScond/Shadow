@@ -25,7 +25,6 @@ import mobi.oneway.sd.core.runtime.ShadowLayoutInflater;
 import mobi.oneway.sd.core.runtime.container.HostActivityDelegate;
 import mobi.oneway.sd.core.runtime.container.HostActivityDelegator;
 
-import static mobi.oneway.sd.core.loader.managers.ComponentManager.*;
 import static mobi.oneway.sd.core.loader.managers.ComponentManager.CM_ACTIVITY_INFO_KEY;
 import static mobi.oneway.sd.core.loader.managers.ComponentManager.CM_BUSINESS_NAME_KEY;
 import static mobi.oneway.sd.core.loader.managers.ComponentManager.CM_CALLING_ACTIVITY_KEY;
@@ -34,6 +33,12 @@ import static mobi.oneway.sd.core.loader.managers.ComponentManager.CM_EXTRAS_BUN
 import static mobi.oneway.sd.core.loader.managers.ComponentManager.CM_LOADER_BUNDLE_KEY;
 import static mobi.oneway.sd.core.loader.managers.ComponentManager.CM_PART_KEY;
 
+/**
+ * 壳子Activity与插件Activity转调关系的实现类
+ * 它是抽象的是因为它缺少必要的业务信息.业务必须继承这个类提供业务信息.
+ *
+ * @author cubershi
+ */
 public class ShadowActivityDelegate extends GeneratedShadowActivityDelegate implements HostActivityDelegate {
 
 
@@ -264,8 +269,7 @@ public class ShadowActivityDelegate extends GeneratedShadowActivityDelegate impl
 
     @Override
     public LayoutInflater getLayoutInflater() {
-        LayoutInflater inflater = (LayoutInflater) mHostActivityDelegator.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        return ShadowLayoutInflater.build(inflater, getPluginActivity(), mPartKey);
+        return LayoutInflater.from(getPluginActivity());
     }
 
     @Override

@@ -44,5 +44,9 @@ class ShadowTransform(
         _mTransformManager = TransformManager(mCtClassInputMap, classPool, useHostContext, disableTransformClasses())
     }
 
+    override fun isCacheable(): Boolean {
+        return true
+    }
+
     override fun getName(): String = "ShadowTransform"
 }

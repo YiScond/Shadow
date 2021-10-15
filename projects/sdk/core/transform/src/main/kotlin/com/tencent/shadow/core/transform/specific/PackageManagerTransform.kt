@@ -18,6 +18,7 @@
 
 package com.tencent.shadow.core.transform.specific
 
+import com.tencent.shadow.core.transform.ShadowTransform.Companion.SelfClassNamePlaceholder
 import com.tencent.shadow.core.transform_kit.CodeConverterExtension
 import com.tencent.shadow.core.transform_kit.SpecificTransform
 import com.tencent.shadow.core.transform_kit.TransformStep
@@ -70,7 +71,7 @@ class PackageManagerTransform : SpecificTransform() {
                                 .append(".")
                                 .append(targetMethod.methodInfo.name)
                                 .append("(")
-                                .append(ctClass.name)
+                                .append(SelfClassNamePlaceholder)
                                 .append(".class.getClassLoader(),")
                         //下面放弃第0个和第1个参数，第0个是this，
                         //第1个是redirectMethodCallToStaticMethodCall时原本被调用的PackageManager对象。
@@ -84,6 +85,7 @@ class PackageManagerTransform : SpecificTransform() {
 
                         newMethod.setBody(newBodyBuilder.toString())
                         ctClass.addMethod(newMethod)
+                        ctClass.replaceClassName(SelfClassNamePlaceholder, ctClass.name)
                         val codeConverter = CodeConverterExtension()
                         codeConverter.redirectMethodCallToStaticMethodCall(targetMethod, newMethod)
                         ctClass.instrument(codeConverter)

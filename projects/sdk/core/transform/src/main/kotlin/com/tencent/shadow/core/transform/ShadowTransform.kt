@@ -31,6 +31,11 @@ class ShadowTransform(
         private val disableTransformClasses: () -> Array<String>
 ) : AbstractTransform(project, classPoolBuilder) {
 
+    companion object {
+        const val SelfClassNamePlaceholder =
+                "com.tencent.shadow.core.transform.SelfClassNamePlaceholder"
+    }
+
     lateinit var _mTransformManager: TransformManager
 
     override val mTransformManager: AbstractTransformManager
@@ -42,6 +47,7 @@ class ShadowTransform(
             System.out.println("disableTransformClass -> ${it}")
         }
         _mTransformManager = TransformManager(mCtClassInputMap, classPool, useHostContext, disableTransformClasses())
+        classPool.makeInterface(SelfClassNamePlaceholder)
     }
 
     override fun isCacheable(): Boolean {

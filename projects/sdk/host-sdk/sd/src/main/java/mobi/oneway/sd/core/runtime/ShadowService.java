@@ -98,6 +98,10 @@ public abstract class ShadowService extends ShadowContext {
         //mHostServiceDelegator.stopForeground(removeNotification);
     }
 
+    public final void startForeground(int id, Notification notification, int foregroundServiceType){
+
+    }
+
     public final void stopForeground(int flags) {
 
     }

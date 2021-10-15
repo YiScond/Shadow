@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
+import android.content.pm.ServiceInfo;
 
 import mobi.oneway.sd.core.runtime.PluginPackageManager;
 
@@ -74,6 +75,34 @@ public class PluginPackageManagerImpl
     }
 
     @Override
+    public ServiceInfo getServiceInfo(ComponentName component, int flags) throws PackageManager.NameNotFoundException {
+
+        if (component.getPackageName().equals(packageInfo.applicationInfo.packageName)) {
+            ServiceInfo pluginServiceInfo = null;
+            flag:
+            if (allPluginPackageInfo != null) {
+                for (PackageInfo packageInfo : allPluginPackageInfo) {
+                    if (packageInfo.services != null) {
+                        for (ServiceInfo serviceInfo : packageInfo.services) {
+                            if (serviceInfo.name.equals(component.getClassName())) {
+                                pluginServiceInfo = serviceInfo;
+                                break flag;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            if (pluginServiceInfo != null) {
+                return pluginServiceInfo;
+            }
+        }
+
+        return hostPackageManager.getServiceInfo(component, flags);
+    }
+
+    @Override
     public ProviderInfo resolveContentProvider(String name, int flags) {
         ProviderInfo pluginProviderInfo = null;
         flag:
@@ -95,6 +124,32 @@ public class PluginPackageManagerImpl
         }
 
         return hostPackageManager.resolveContentProvider(name, flags);
+    }
+
+    @Override
+    public ResolveInfo resolveService(Intent intent, int flags) {
+
+        ResolveInfo hostResolveInfo = hostPackageManager.resolveService(intent, flags);
+        if (hostResolveInfo != null && hostResolveInfo.serviceInfo == null) {
+            ResolveInfo resolveInfo = new ResolveInfo();
+            flag:
+            if (allPluginPackageInfo != null) {
+                for (PackageInfo packageInfo : allPluginPackageInfo) {
+                    if (packageInfo.services != null) {
+                        for (ServiceInfo serviceInfo : packageInfo.services) {
+                            ComponentName componentName = intent.getComponent();
+                            if (componentName != null && serviceInfo.name.equals(intent.getComponent().getClassName())) {
+                                resolveInfo.serviceInfo = serviceInfo;
+                                break flag;
+                            }
+                        }
+                    }
+                }
+            }
+            return resolveInfo;
+        } else {
+            return hostResolveInfo;
+        }
     }
 
     @Override

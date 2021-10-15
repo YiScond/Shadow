@@ -110,7 +110,7 @@ def sdkHostGroupId = 'mobi.oneway.sd'
 def sdkHostPath = 'projects/sdk/host-sdk'
 
 def gradlePluginVersion = "1.0.1"
-def sdkHostVersion = "1.0.3"
+def sdkHostVersion = "1.0.4"
 
 publishing {
     publications {

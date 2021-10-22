@@ -109,7 +109,7 @@ def dynamicPath = 'projects/sdk/dynamic'
 def sdkHostGroupId = 'mobi.oneway.sd'
 def sdkHostPath = 'projects/sdk/host-sdk'
 
-def gradlePluginVersion = "1.0.2"
+def gradlePluginVersion = "1.0.3"
 def sdkHostVersion = "1.0.4"
 
 publishing {
@@ -242,7 +242,7 @@ publishing {
                 def dependencies = root.appendNode('dependencies')
                 dependencies.append(getDependencyNode('compile', 'org.jetbrains.kotlin', 'kotlin-stdlib-jdk7', kotlin_version))
                 dependencies.append(getDependencyNode('compile', 'com.android.tools.build', 'gradle', build_gradle_version))
-                dependencies.append(getDependencyNode('compile', 'org.javassist', 'javassist', '3.22.0-GA'))
+                dependencies.append(getDependencyNode('compile', 'org.javassist', 'javassist', '3.28.0-GA'))
 
                 def scm = root.appendNode('scm')
                 setScm(scm)

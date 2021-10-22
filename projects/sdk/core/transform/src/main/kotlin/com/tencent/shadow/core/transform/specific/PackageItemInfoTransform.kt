@@ -19,13 +19,9 @@
 package com.tencent.shadow.core.transform.specific
 
 import com.tencent.shadow.core.transform.ShadowTransform.Companion.SelfClassNamePlaceholder
-import com.tencent.shadow.core.transform_kit.CodeConverterExtension
 import com.tencent.shadow.core.transform_kit.SpecificTransform
 import com.tencent.shadow.core.transform_kit.TransformStep
-import javassist.CtClass
-import javassist.CtMethod
-import javassist.CtNewMethod
-import javassist.Modifier
+import javassist.*
 import java.util.*
 
 class PackageItemInfoTransform : SpecificTransform() {
@@ -94,8 +90,8 @@ class PackageItemInfoTransform : SpecificTransform() {
                         newMethod.setBody(newBodyBuilder.toString())
                         ctClass.addMethod(newMethod)
                         ctClass.replaceClassName(SelfClassNamePlaceholder,ctClass.name)
-                        val codeConverter = CodeConverterExtension()
-                        codeConverter.redirectMethodCallToStaticMethodCall(targetMethod, newMethod)
+                        val codeConverter = CodeConverter()
+                        codeConverter.redirectMethodCallToStatic(targetMethod, newMethod)
                         ctClass.instrument(codeConverter)
                     } catch (e: Exception) {
                         System.err.println("处理" + ctClass.name + "时出错:" + e)

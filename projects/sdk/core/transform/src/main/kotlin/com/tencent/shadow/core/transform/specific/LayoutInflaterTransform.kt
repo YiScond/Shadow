@@ -1,8 +1,8 @@
 package com.tencent.shadow.core.transform.specific
 
-import com.tencent.shadow.core.transform_kit.CodeConverterExtension
 import com.tencent.shadow.core.transform_kit.SpecificTransform
 import com.tencent.shadow.core.transform_kit.TransformStep
+import javassist.CodeConverter
 import javassist.CtClass
 import javassist.bytecode.Descriptor
 
@@ -39,9 +39,9 @@ class LayoutInflaterTransform : SpecificTransform() {
                 Descriptor.ofMethod(layoutInflaterFactory2Class, arrayOf(androidLayoutInflaterClass))
         )
 
-        val codeConverter = CodeConverterExtension()
-        codeConverter.redirectMethodCallToStaticMethodCall(getFactoryMethod, getOriginalFactoryMethod)
-        codeConverter.redirectMethodCallToStaticMethodCall(getFactory2Method, getOriginalFactory2Method)
+        val codeConverter = CodeConverter()
+        codeConverter.redirectMethodCallToStatic(getFactoryMethod, getOriginalFactoryMethod)
+        codeConverter.redirectMethodCallToStatic(getFactory2Method, getOriginalFactory2Method)
 
         newStep(object : TransformStep {
             override fun filter(allInputClass: Set<CtClass>) =

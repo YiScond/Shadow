@@ -4,10 +4,12 @@ task buildSdk() {
     dependsOn gradle.includedBuild('core').task(':transform-kit:testJar')
     dependsOn gradle.includedBuild('core').task(':transform:assemble')
 
-    dependsOn gradle.includedBuild('host-sdk').task(':sd:assembleRelease')
+    dependsOn gradle.includedBuild('host-sdk').task(':sd:buildReleaseSd')
 }
 
 apply plugin: 'maven-publish'
+
+apply from: './buildScripts/gradle/version.gradle'
 
 static def getDependencyNode(scope, groupId, artifactId, version) {
     Node node = new Node(null, 'dependency')
@@ -63,9 +65,6 @@ def coreGroupId = 'com.tencent.shadow.core'
 def corePath = 'projects/sdk/core'
 def sdkHostGroupId = 'mobi.oneway.sd'
 def sdkHostPath = 'projects/sdk/host-sdk'
-
-def gradlePluginVersion = "1.0.4"
-def sdkHostVersion = "1.0.4"
 
 publishing {
     publications {

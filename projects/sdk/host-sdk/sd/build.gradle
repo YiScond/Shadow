@@ -1,6 +1,13 @@
+import org.apache.commons.io.IOUtils
+
+import java.util.zip.ZipInputStream
+
 plugins {
     id 'com.android.library'
 }
+
+apply from: '../../../../buildScripts/gradle/version.gradle'
+
 
 android {
     compileSdkVersion project.COMPILE_SDK_VERSION
@@ -29,4 +36,36 @@ android {
 
 dependencies {
     testImplementation 'junit:junit:4.+'
+}
+
+/**
+ * 解压aar 将jar包提取出来
+ */
+task buildReleaseSd(dependsOn: ['assembleRelease']) {
+    doLast {
+        def aarPath = "$project.buildDir.path/outputs/aar/sd-release.aar"
+        def zipInputStream = new ZipInputStream(new FileInputStream(new File(aarPath)))
+        def zipEntry = null
+        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+            def entryName = zipEntry.name
+            if (entryName.equals("classes.jar")) {
+                def jarFile = new File("${project.buildDir.path}/outputs/ows-${sdkHostVersion}.jar")
+                copyJarFile(zipInputStream, jarFile)
+                break
+            }
+        }
+
+        IOUtils.closeQuietly(zipInputStream)
+    }
+}
+
+def copyJarFile(InputStream inputStream, File jarFile) {
+    def fileOutput = new FileOutputStream(jarFile)
+    def len = 0
+    def data = new byte[1024]
+    while ((len = inputStream.read(data)) != -1) {
+        fileOutput.write(data, 0, len)
+    }
+    IOUtils.closeQuietly(inputStream)
+    IOUtils.closeQuietly(fileOutput)
 }

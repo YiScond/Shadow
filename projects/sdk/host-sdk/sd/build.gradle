@@ -2,9 +2,8 @@ import org.apache.commons.io.IOUtils
 
 import java.util.zip.ZipInputStream
 
-plugins {
-    id 'com.android.library'
-}
+apply plugin: 'com.android.library'
+
 
 apply from: '../../../../buildScripts/gradle/version.gradle'
 
@@ -17,6 +16,7 @@ android {
         targetSdkVersion project.TARGET_SDK_VERSION
         versionCode project.VERSION_CODE
         versionName project.VERSION_NAME
+        buildConfigField("String", "VERSION_NAME", "\"${defaultConfig.versionName}\"")
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 

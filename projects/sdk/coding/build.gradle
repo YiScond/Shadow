@@ -18,5 +18,10 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
+
+allprojects {
+    group 'com.tencent.shadow.coding'
+}
+
 apply from: '../../../buildScripts/gradle/common.gradle'
 

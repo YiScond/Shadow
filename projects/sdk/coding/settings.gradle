@@ -1,1 +1,1 @@
-include 'code-generator'
+include 'code-generator','get-android-jar'

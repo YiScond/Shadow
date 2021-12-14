@@ -99,6 +99,10 @@ public abstract class BasePluginManager {
             File root = apkFile.getParentFile();
             String filter = "lib/" + getAbi() + "/";
             File soDir = AppCacheFolderManager.getLibDir(root, pluginName);
+            if (mLogger.isInfoEnabled()) {
+                mLogger.info("extractSo  apkFile=={} soDir=={} filter=={}",
+                        apkFile.getAbsolutePath(), soDir.getAbsolutePath(), filter);
+            }
             CopySoBloc.copySo(apkFile, soDir
                     , AppCacheFolderManager.getLibCopiedFile(soDir, pluginName), filter);
         } catch (InstallPluginException e) {
@@ -111,15 +115,14 @@ public abstract class BasePluginManager {
 
 
     /**
-     * 业务插件的abi
-     *
-     * @return
+     * 获取插件应该采用的ABI
+     * <p>
+     * 对系统来说插件代码是系统的一部分，所以插件只能用跟宿主一样ABI的so。
+     * 这里查询宿主安装后系统自动决定的ABI目录，而不是Build.SUPPORTED_ABIS，因为宿主可能采用了兼容模式的ABI。
      */
     private String getAbi() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return Build.SUPPORTED_ABIS[0];
-        } else {
-            return Build.CPU_ABI;
-        }
+        String nativeLibraryDir = mHostContext.getApplicationInfo().nativeLibraryDir;
+        int nextIndexOfLastSlash = nativeLibraryDir.lastIndexOf('/') + 1;
+        return nativeLibraryDir.substring(nextIndexOfLastSlash);
     }
 }

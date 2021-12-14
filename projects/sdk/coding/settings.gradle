@@ -1,1 +1,2 @@
 include 'code-generator', 'android-jar', 'get-android-jar'
+include 'aar-to-jar-plugin'

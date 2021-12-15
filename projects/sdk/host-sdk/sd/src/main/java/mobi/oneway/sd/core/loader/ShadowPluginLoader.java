@@ -10,10 +10,7 @@ import mobi.oneway.sd.core.common.Logger;
 import mobi.oneway.sd.core.common.LoggerFactory;
 import mobi.oneway.sd.core.load_parameters.LoadParameters;
 import mobi.oneway.sd.core.loader.blocs.LoadPluginBloc;
-import mobi.oneway.sd.core.loader.delegates.DI;
-import mobi.oneway.sd.core.loader.delegates.ShadowActivityDelegate;
-import mobi.oneway.sd.core.loader.delegates.ShadowContentProviderDelegate;
-import mobi.oneway.sd.core.loader.delegates.ShadowDelegate;
+import mobi.oneway.sd.core.loader.delegates.*;
 import mobi.oneway.sd.core.loader.exceptions.LoadPluginException;
 import mobi.oneway.sd.core.loader.infos.PluginParts;
 import mobi.oneway.sd.core.loader.managers.ComponentManager;
@@ -27,6 +24,7 @@ import mobi.oneway.sd.core.runtime.container.DelegateProviderHolder;
 import mobi.oneway.sd.core.runtime.container.HostActivityDelegate;
 import mobi.oneway.sd.core.runtime.container.HostActivityDelegator;
 import mobi.oneway.sd.core.runtime.container.HostContentProviderDelegate;
+import mobi.oneway.sd.core.runtime.container.HostNativeActivityDelegator;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -191,7 +189,11 @@ public abstract class ShadowPluginLoader implements DelegateProvider, DI, Conten
 
     @Override
     public HostActivityDelegate getHostActivityDelegate(Class<? extends HostActivityDelegator> delegator) {
-        return new ShadowActivityDelegate(this);
+         if (HostNativeActivityDelegator.class.isAssignableFrom(delegator)) {
+            return new ShadowNativeActivityDelegate(this);
+        } else {
+            return new ShadowActivityDelegate(this);
+        }
     }
 
     @Override

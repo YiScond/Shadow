@@ -16,14 +16,23 @@
  *
  */
 
-package com.tencent.shadow.core.transform.specific
+package mobi.oneway.sd.core.runtime.container;
 
-class ActivityTransform : SimpleRenameTransform(
-        mapOf(
-                "android.app.Activity"
-                        to "mobi.oneway.sd.core.runtime.ShadowActivity",
-                "android.app.NativeActivity"
-                        to "mobi.oneway.sd.core.runtime.ShadowNativeActivity"
-        )
+import android.view.InputQueue;
+import android.view.SurfaceHolder;
 
-)
+public interface HostNativeActivityDelegator extends HostActivityDelegator {
+    void superSurfaceCreated(SurfaceHolder holder);
+
+    void superSurfaceChanged(SurfaceHolder holder, int format, int width, int height);
+
+    void superSurfaceRedrawNeeded(SurfaceHolder holder);
+
+    void superSurfaceDestroyed(SurfaceHolder holder);
+
+    void superOnInputQueueCreated(InputQueue queue);
+
+    void superOnInputQueueDestroyed(InputQueue queue);
+
+    void superOnGlobalLayout();
+}

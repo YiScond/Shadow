@@ -47,7 +47,7 @@ public class ShadowActivityDelegate extends GeneratedShadowActivityDelegate impl
 
     private DI mDI;
 
-    private HostActivityDelegator mHostActivityDelegator;
+    protected HostActivityDelegator mHostActivityDelegator;
     private String mBusinessName;
     private String mPartKey;
     private Bundle mBundleForPluginLoader;
@@ -80,6 +80,7 @@ public class ShadowActivityDelegate extends GeneratedShadowActivityDelegate impl
     private Configuration mCurrentConfiguration;
     private int mPluginHandleConfigurationChange;
     private ComponentName mCallingActivity;
+    protected PluginActivityInfo mPluginActivityInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class ShadowActivityDelegate extends GeneratedShadowActivityDelegate impl
         bundleForPluginLoader.setClassLoader(ShadowActivity.class.getClassLoader());
         String pluginActivityClassName = bundleForPluginLoader.getString(CM_CLASS_NAME_KEY);
         PluginActivityInfo pluginActivityInfo = bundleForPluginLoader.getParcelable(CM_ACTIVITY_INFO_KEY);
+        mPluginActivityInfo = pluginActivityInfo;
 
         mCurrentConfiguration = new Configuration(getResources().getConfiguration());
         mPluginHandleConfigurationChange =

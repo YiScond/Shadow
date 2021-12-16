@@ -1,5 +1,4 @@
 includeBuild '../coding'
-include 'generate-delegate-code',
-        'transform',
+include 'transform',
         'gradle-plugin',
         'transform-kit'

@@ -55,11 +55,12 @@ import javax.lang.model.element.Modifier
 class ActivityCodeGenerator {
 
     companion object {
-        const val ACTIVITY_CONTAINER_PACKAGE = "com.tencent.shadow.core.runtime.container"
-        const val RUNTIME_PACKAGE = "com.tencent.shadow.core.runtime"
-        const val DELEGATE_PACKAGE = "com.tencent.shadow.core.loader.delegates"
+        const val ACTIVITY_CONTAINER_PACKAGE = "mobi.oneway.sd.core.runtime.container"
+        const val RUNTIME_PACKAGE = "mobi.oneway.sd.core.runtime"
+        const val DELEGATE_PACKAGE = "mobi.oneway.sd.core.loader.delegates"
 
         const val PREFIX = "Generated"
+
         //CS:const string
         const val CS_HostActivityDelegate = "${PREFIX}HostActivityDelegate"
         const val CS_HostActivityDelegator = "${PREFIX}HostActivityDelegator"
@@ -72,10 +73,11 @@ class ActivityCodeGenerator {
         const val CS_pluginActivity_field = "pluginActivity"
 
         val classPool = ClassPool.getDefault()
+
         init {
             // 兼容javassist升级后的ClassPool#appendSystemPath()改动：
             // https://github.com/jboss-javassist/javassist/commit/e41e0790c0cb073e9e2e30071afecfcdc4621d42
-            if (javassist.bytecode.ClassFile.MAJOR_VERSION < javassist.bytecode.ClassFile.JAVA_9){
+            if (javassist.bytecode.ClassFile.MAJOR_VERSION < javassist.bytecode.ClassFile.JAVA_9) {
                 val cl = Thread.currentThread().contextClassLoader
                 classPool.appendClassPath(LoaderClassPath(cl))
             }
@@ -251,7 +253,7 @@ class ActivityCodeGenerator {
          * 一般情况下，一个类的方法签名中如果含有找不到的类，在这个类本身被new出来时是不会出错的。
          * JVM不会去检查一个类的所有方法的签名中涉及到的类是否都存在。只有当调用该方法时才会发现签名上的类找不到。
          *
-         * 但是在com.tencent.shadow.core.loader.ShadowPluginLoader.getHostActivityDelegate中，
+         * 但是在mobi.oneway.sd.core.loader.ShadowPluginLoader.getHostActivityDelegate中，
          * 将实现以接口类型返回时，涉及一种特殊情况，就是实现和接口不是由同一个ClassLoader加载的。
          * 在这种情况下，JVM会检查实现是否真的实现了接口的每一个方法定义。所以会去尝试加载接口上所有方法签名涉及的类。
          * 这会导致在低版本系统上尝试加载高版本引入的类，比如android.app.role.RoleManager是API29引入的，
@@ -306,7 +308,8 @@ class ActivityCodeGenerator {
                 builder.addParameter(
                     ParameterSpec.builder(
                         if (it.type.isSafeForLowApi()) it.parameterizedType else Object::class.java,
-                        it.name)
+                        it.name
+                    )
                         .build()
                 )
             }
@@ -328,7 +331,8 @@ class ActivityCodeGenerator {
         }
     }
 
-    val commonJavadoc = "由\n" + "{@link com.tencent.shadow.coding.code_generator.ActivityCodeGenerator}\n" + "自动生成\n"
+    val commonJavadoc =
+        "由\n" + "{@link mobi.oneway.sd.coding.code_generator.ActivityCodeGenerator}\n" + "自动生成\n"
 
     val activityDelegate = defineActivityDelegate()
     val activityDelegator = defineActivityDelegator()
@@ -343,20 +347,26 @@ class ActivityCodeGenerator {
     val pluginActivity = definePluginActivity()
     val shadowActivityDelegate = defineShadowActivityDelegate()
 
+    init {
+        addMethods()
+    }
+
     fun defineActivityDelegate() =
         TypeSpec.interfaceBuilder(CS_HostActivityDelegate)
             .addModifiers(Modifier.PUBLIC)
-            .addJavadoc(commonJavadoc
-                    + "HostActivity的被委托者接口\n"
-                    + "被委托者通过实现这个接口中声明的方法达到替代委托者实现的目的，从而将HostActivity的行为动态化。\n"
+            .addJavadoc(
+                commonJavadoc
+                        + "HostActivity的被委托者接口\n"
+                        + "被委托者通过实现这个接口中声明的方法达到替代委托者实现的目的，从而将HostActivity的行为动态化。\n"
             )
 
     fun defineActivityDelegator() =
         TypeSpec.interfaceBuilder(CS_HostActivityDelegator)
             .addModifiers(Modifier.PUBLIC)
-            .addJavadoc(commonJavadoc
-                    + "HostActivityDelegator作为委托者的接口。主要提供它的委托方法的super方法，\n"
-                    + "以便Delegate可以通过这个接口调用到Activity的super方法。\n"
+            .addJavadoc(
+                commonJavadoc
+                        + "HostActivityDelegator作为委托者的接口。主要提供它的委托方法的super方法，\n"
+                        + "以便Delegate可以通过这个接口调用到Activity的super方法。\n"
             )
 
     fun definePluginContainerActivity(className: String, superclass: Type) =
@@ -379,10 +389,12 @@ class ActivityCodeGenerator {
         TypeSpec.classBuilder(CS_PluginActivity)
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
             .superclass(ClassName.get(RUNTIME_PACKAGE, "ShadowContext"))
-            .addSuperinterfaces(listOf(
-                ClassName.get(Window.Callback::class.java),
-                ClassName.get(KeyEvent.Callback::class.java)
-            ))
+            .addSuperinterfaces(
+                listOf(
+                    ClassName.get(Window.Callback::class.java),
+                    ClassName.get(KeyEvent.Callback::class.java)
+                )
+            )
             .addAnnotation(
                 AnnotationSpec.builder(SuppressLint::class.java)
                     .addMember("value", "{\"NullableProblems\", \"deprecation\"}")
@@ -418,30 +430,26 @@ class ActivityCodeGenerator {
             )
 
     fun generate(outputDir: File) {
-        val activityContainerOutput = File(outputDir, "activity_container")
-        val runtimeOutput = File(outputDir, "runtime")
-        val loaderOutput = File(outputDir, "loader")
-        activityContainerOutput.mkdirs()
-        runtimeOutput.mkdirs()
-        loaderOutput.mkdirs()
+        outputDir.mkdirs()
 
-        addMethods()
-        writeOutJavaFiles(activityContainerOutput, runtimeOutput, loaderOutput)
-    }
+        //activity_container
+        listOf(
+            activityDelegate,
+            activityDelegator,
+            pluginContainerActivity,
+            nativePluginContainerActivity,
+        ).forEach {
+            JavaFile.builder(ACTIVITY_CONTAINER_PACKAGE, it.build())
+                .build().writeTo(outputDir)
+        }
 
-    fun writeOutJavaFiles(activityContainerOutput: File, runtimeOutput: File, loaderOutput: File) {
-        JavaFile.builder(ACTIVITY_CONTAINER_PACKAGE, activityDelegate.build())
-            .build().writeTo(activityContainerOutput)
-        JavaFile.builder(ACTIVITY_CONTAINER_PACKAGE, activityDelegator.build())
-            .build().writeTo(activityContainerOutput)
-        JavaFile.builder(ACTIVITY_CONTAINER_PACKAGE, pluginContainerActivity.build())
-            .build().writeTo(activityContainerOutput)
-        JavaFile.builder(ACTIVITY_CONTAINER_PACKAGE, nativePluginContainerActivity.build())
-            .build().writeTo(activityContainerOutput)
+        //runtime
         JavaFile.builder(RUNTIME_PACKAGE, pluginActivity.build())
-            .build().writeTo(runtimeOutput)
+            .build().writeTo(outputDir)
+
+        //loader
         JavaFile.builder(DELEGATE_PACKAGE, shadowActivityDelegate.build())
-            .build().writeTo(loaderOutput)
+            .build().writeTo(outputDir)
     }
 
     fun addMethods() {
@@ -631,7 +639,10 @@ class ActivityCodeGenerator {
 
         val ret = if (method.returnType == Void::class.javaPrimitiveType) "" else "return "
         val args = method.parameters.joinToString(separator = ", ") {
-            (if (it.type.isSafeForLowApi()) CodeBlock.of("\$L", it.name) else CodeBlock.of("(\$T) \$L", it.parameterizedType, it.name)).toString()
+            (if (it.type.isSafeForLowApi()) CodeBlock.of(
+                "\$L",
+                it.name
+            ) else CodeBlock.of("(\$T) \$L", it.parameterizedType, it.name)).toString()
         }
         methodBuilder.addStatement("${ret}${CS_pluginActivity_field}.${method.name}($args)")
 

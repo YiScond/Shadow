@@ -1,3 +1,4 @@
+import com.tencent.shadow.coding.code_generator.ActivityCodeGenerator
 import org.apache.commons.io.IOUtils
 
 import java.util.zip.ZipInputStream
@@ -31,6 +32,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets{
+        main.java.srcDirs += 'build/generated/sources/code-generator'
     }
 }
 
@@ -69,3 +74,17 @@ def copyJarFile(InputStream inputStream, File jarFile) {
     IOUtils.closeQuietly(inputStream)
     IOUtils.closeQuietly(fileOutput)
 }
+
+def generateCode = tasks.register('generateCode') {
+    def outputDir = layout.buildDirectory.dir('generated/sources/code-generator')
+    outputs.dir(outputDir)
+            .withPropertyName('outputDir')
+    doLast {
+        ActivityCodeGenerator codeGenerator = new ActivityCodeGenerator()
+        codeGenerator.generate(outputDir.get().getAsFile())
+    }
+}
+
+preBuild.dependsOn(generateCode)
+
+

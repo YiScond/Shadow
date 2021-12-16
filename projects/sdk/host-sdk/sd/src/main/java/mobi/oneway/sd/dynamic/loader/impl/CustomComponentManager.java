@@ -53,21 +53,4 @@ public class CustomComponentManager extends ComponentManager {
                 mobi.oneway.sd.core.runtime.container.PluginContainerContentProvider.class.getName(),
                 context.getPackageName() + "ow.contentprovider.authority.dynamic");
     }
-
-    @Override
-    public List<BroadcastInfo> getBroadcastInfoList(String partKey) {
-        List<BroadcastInfo> broadcastInfos = new ArrayList<>();
-
-        //如果有静态广播需要像下面代码这样注册
-//        if (partKey.equals(Constant.PART_KEY_PLUGIN_MAIN_APP)) {
-//            broadcastInfos.add(
-//                    new ComponentManager.BroadcastInfo(
-//                            "mobi.oneway.sd.demo.usecases.receiver.MyReceiver",
-//                            new String[]{"com.tencent.test.action"}
-//                    )
-//            );
-//        }
-        return broadcastInfos;
-    }
-
 }

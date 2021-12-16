@@ -10,6 +10,7 @@ import mobi.oneway.sd.core.common.InstalledApk;
 import mobi.oneway.sd.core.load_parameters.LoadParameters;
 import mobi.oneway.sd.core.loader.classloaders.PluginClassLoader;
 import mobi.oneway.sd.core.loader.exceptions.LoadPluginException;
+import mobi.oneway.sd.core.loader.infos.ManifestInfo;
 import mobi.oneway.sd.core.loader.infos.PluginInfo;
 import mobi.oneway.sd.core.loader.infos.PluginParts;
 import mobi.oneway.sd.core.loader.managers.ComponentManager;
@@ -73,6 +74,7 @@ public class LoadPluginBloc {
                                     | PackageManager.GET_META_DATA
                                     | PackageManager.GET_SERVICES
                                     | PackageManager.GET_PROVIDERS
+                                    | PackageManager.GET_RECEIVERS
                                     | PackageManager.GET_SIGNATURES
                     );
 
@@ -108,10 +110,20 @@ public class LoadPluginBloc {
                 }
             });
 
+            final Future<ManifestInfo> buildManifestInfo = executorService.submit(new Callable<ManifestInfo>() {
+                @Override
+                public ManifestInfo call() throws Exception {
+                    return ParseManifestBloc.parse(hostAppContext, installedApk);
+                }
+            });
+
             final Future<PluginInfo> buildPluginInfo = executorService.submit(new Callable<PluginInfo>() {
                 @Override
                 public PluginInfo call() throws Exception {
-                    return ParsePluginApkBloc.parse(getPackageInfo.get(), loadParameters, hostAppContext);
+                    return ParsePluginApkBloc.parse(getPackageInfo.get(),
+                            buildManifestInfo.get(),
+                            loadParameters,
+                            hostAppContext);
                 }
             });
 

@@ -12,6 +12,7 @@ import mobi.oneway.sd.core.loader.infos.PluginActivityInfo;
 import mobi.oneway.sd.core.loader.infos.PluginComponentInfo;
 import mobi.oneway.sd.core.loader.infos.PluginInfo;
 import mobi.oneway.sd.core.loader.infos.PluginProviderInfo;
+import mobi.oneway.sd.core.loader.infos.PluginReceiverInfo;
 import mobi.oneway.sd.core.loader.infos.PluginServiceInfo;
 import mobi.oneway.sd.core.runtime.ShadowContext;
 import mobi.oneway.sd.core.runtime.ShadowContext.PluginComponentLauncher;
@@ -30,7 +31,6 @@ public abstract class ComponentManager implements PluginComponentLauncher {
     private final Map<ComponentName, ComponentName> componentMap = new HashMap();
     private final Map<ComponentName, PluginInfo> pluginInfoMap = new HashMap<>();
     private final Map<ComponentName, PluginComponentInfo> pluginComponentInfoMap = new HashMap<>();
-    private Map application2broadcastInfo;
     private PluginServiceManager mPluginServiceManager;
     private PluginContentProviderManager mPluginContentProviderManager;
 
@@ -57,8 +57,6 @@ public abstract class ComponentManager implements PluginComponentLauncher {
 
     public abstract ContainerProviderInfo onBindContainerContentProvider(ComponentName var1);
 
-
-    public abstract List getBroadcastInfoList(String var1);
 
     public boolean startActivity(ShadowContext shadowContext, Intent pluginIntent, Bundle option) {
         boolean var10000;
@@ -169,6 +167,17 @@ public abstract class ComponentManager implements PluginComponentLauncher {
             }
         }
 
+        Set<PluginReceiverInfo> pluginReceiverInfos = pluginInfo.getMReceivers();
+        if (pluginReceiverInfos != null) {
+            Iterator<PluginReceiverInfo> iterator = pluginReceiverInfos.iterator();
+            while (iterator.hasNext()) {
+                PluginReceiverInfo info = iterator.next();
+                ComponentName componentName = new ComponentName(pluginInfo.getPackageName(),
+                        info.getClassName());
+                common(info, pluginInfo, componentName);
+            }
+        }
+
     }
 
     private void common(PluginComponentInfo pluginComponentInfo, PluginInfo pluginInfo, ComponentName componentName) {
@@ -246,29 +255,7 @@ public abstract class ComponentManager implements PluginComponentLauncher {
     }
 
 
-    public final Map getBroadcastsByPartKey(String partKey) {
-        Object var10000;
-        if (this.application2broadcastInfo.get(partKey) == null) {
-            this.application2broadcastInfo.put(partKey, new HashMap());
-            List broadcastInfoList = this.getBroadcastInfoList(partKey);
-            if (broadcastInfoList != null) {
-                Iterator var4 = broadcastInfoList.iterator();
-
-                while (var4.hasNext()) {
-                    BroadcastInfo broadcastInfo = (BroadcastInfo) var4.next();
-                    var10000 = this.application2broadcastInfo.get(partKey);
-                    ((Map) var10000).put(broadcastInfo.getClassName(), toList(broadcastInfo.getActions()));
-                }
-            }
-        }
-
-        var10000 = this.application2broadcastInfo.get(partKey);
-        return (Map) var10000;
-    }
-
     public ComponentManager() {
-        boolean var1 = false;
-        this.application2broadcastInfo = (Map) (new HashMap());
     }
 
 

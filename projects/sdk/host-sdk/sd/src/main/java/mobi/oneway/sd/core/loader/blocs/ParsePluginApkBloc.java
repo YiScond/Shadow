@@ -7,16 +7,19 @@ import android.content.pm.ProviderInfo;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import mobi.oneway.sd.core.load_parameters.LoadParameters;
-import mobi.oneway.sd.core.loader.infos.PluginActivityInfo;
-import mobi.oneway.sd.core.loader.infos.PluginInfo;
-import mobi.oneway.sd.core.loader.infos.PluginProviderInfo;
-import mobi.oneway.sd.core.loader.infos.PluginServiceInfo;
+import mobi.oneway.sd.core.loader.infos.*;
 
 public class ParsePluginApkBloc {
-    public static PluginInfo parse(PackageInfo packageArchiveInfo, LoadParameters loadParameters, Context hostAppContext){
+    public static PluginInfo parse(PackageInfo packageArchiveInfo,
+                                   ManifestInfo manifestInfo,
+                                   LoadParameters loadParameters,
+                                   Context hostAppContext) {
         /*if (!packageArchiveInfo.applicationInfo.packageName.equals(hostAppContext.getPackageName())) {
-            *//*
+         *//*
             要求插件和宿主包名一致有两方面原因：
             1.正常的构建过程中，aapt会将包名写入到arsc文件中。插件正常安装运行时，如果以
             android.content.Context.getPackageName为参数传给
@@ -66,6 +69,20 @@ public class ParsePluginApkBloc {
         if (packageArchiveInfo.providers != null) {
             for (ProviderInfo providerInfo : packageArchiveInfo.providers) {
                 pluginInfo.putPluginProviderInfo(new PluginProviderInfo(providerInfo.name, providerInfo.authority, providerInfo));
+            }
+        }
+
+        if (packageArchiveInfo.receivers != null) {
+            Map<String, ManifestInfo.Receiver> receiverMap = new HashMap<>();
+            for (ManifestInfo.Receiver receiver : manifestInfo.getReceivers()) {
+                receiverMap.put(receiver.getName(), receiver);
+            }
+
+            for (ActivityInfo activityInfo : packageArchiveInfo.receivers) {
+                PluginReceiverInfo pluginReceiverInfo = new PluginReceiverInfo(activityInfo.name,
+                        activityInfo,
+                        receiverMap.get(activityInfo.name).actions());
+                pluginInfo.putReceiverInfo(pluginReceiverInfo);
             }
         }
 

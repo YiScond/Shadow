@@ -82,3 +82,6 @@ Shadow现有的代码满足的是我们自己的业务现在的需求。得益�
 
 ## 许可协议
 Tencent Shadow采用`BSD 3-Clause License`，详见[LICENSE](LICENSE.txt)。
+
+## 注意
+这个分支如果是从最新分支切过来,如果generate-delegate-code模块的ActivityCodeGenerator报红,需要将jdk版本指定为1.8

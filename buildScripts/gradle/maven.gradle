@@ -138,6 +138,21 @@ publishing {
                 setScm(scm)
             }
         }
+
+        sdJar(MavenPublication) {
+            groupId sdkHostGroupId
+            artifactId 'sdJar'
+            version sdkHostVersion
+            artifact("$sdkHostPath/sd/build/outputs/ows-${sdkHostVersion}.jar")
+            artifact sourceJar("sdJar", "$sdkHostPath/sd")
+
+            pom.withXml {
+                def root = asNode()
+
+                def scm = root.appendNode('scm')
+                setScm(scm)
+            }
+        }
     }
     repositories {
         def useLocalCredential = false
@@ -181,3 +196,5 @@ setGeneratePomFileAndDepends('gradlePlugin')
 setGeneratePomFileAndDepends('transformKit')
 setGeneratePomFileAndDepends('transform')
 setGeneratePomFileAndDepends('sd')
+setGeneratePomFileAndDepends('sdJar')
+

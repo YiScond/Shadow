@@ -30,20 +30,21 @@ public class AppCacheFolderManager {
     }
 
 
-    public static File getODexDir(File root,String key){
-        return new File(root, key+ "_odex");
+    public static File getODexDir(File root, String key) {
+        return new File(root, key + "_odex");
     }
 
-    public static File getODexCopiedFile(File oDexDir,String key){
-        return new File(oDexDir, key+ "_oDexed");
+    public static File getODexCopiedFile(File oDexDir, String key) {
+        return new File(oDexDir, key + "_oDexed");
     }
 
-    public static File getLibDir(File root,String key){
-        return new File(root, key+ "_lib");
+    public static File getLibDir(File root, String key) {
+        return new File(root, key + "_lib");
     }
 
-    public static File getLibCopiedFile(File soDir,String key){
-        return new File(soDir, key+ "_copied");
+    public static File getLibCopiedFile(File soDir, String key) {
+        //更新写入成功标识文件,新的so识别机制防止上一版插件存在导致没复制到正确位数的so文件
+        return new File(soDir, key + "_copied_2");
     }
 
 }

@@ -21,3 +21,7 @@ buildscript {
 apply from: 'buildScripts/gradle/common.gradle'
 
 apply from: "buildScripts/gradle/maven.gradle"
+
+task clean() {
+
+}

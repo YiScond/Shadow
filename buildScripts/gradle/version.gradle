@@ -1,2 +1,1 @@
-ext.gradlePluginVersion = "1.0.1"
-ext.sdkHostVersion = "1.0.1"
+ext.sdkVersion = "1.0.2"

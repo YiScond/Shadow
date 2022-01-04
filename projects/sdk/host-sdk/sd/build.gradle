@@ -49,7 +49,7 @@ task buildReleaseSd(dependsOn: ['assembleRelease']) {
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             def entryName = zipEntry.name
             if (entryName.equals("classes.jar")) {
-                def jarFile = new File("${project.buildDir.path}/outputs/ows-${sdkHostVersion}.jar")
+                def jarFile = new File("${project.buildDir.path}/outputs/ows-${sdkVersion}.jar")
                 copyJarFile(zipInputStream, jarFile)
                 break
             }

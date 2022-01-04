@@ -71,7 +71,7 @@ publishing {
         gradlePlugin(MavenPublication) {
             groupId coreGroupId
             artifactId 'gradle-plugin'
-            version gradlePluginVersion
+            version sdkVersion
             artifact("$corePath/gradle-plugin/build/libs/gradle-plugin.jar")
             artifact sourceJar("gradlePlugin", "$corePath/gradle-plugin")
 
@@ -79,9 +79,9 @@ publishing {
                 def root = asNode()
                 def dependencies = root.appendNode('dependencies')
                 dependencies.append(getDependencyNode('compile', 'com.android.tools.build', 'gradle', build_gradle_version))
-                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform-kit', gradlePluginVersion))
-                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform', gradlePluginVersion))
-                dependencies.append(getDependencyNode('compile', sdkHostGroupId, 'sd', sdkHostVersion))
+                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform-kit', sdkVersion))
+                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform', sdkVersion))
+                dependencies.append(getDependencyNode('compile', sdkHostGroupId, 'sd', sdkVersion))
 
                 def scm = root.appendNode('scm')
                 setScm(scm)
@@ -91,7 +91,7 @@ publishing {
         transformKit(MavenPublication) {
             groupId coreGroupId
             artifactId 'transform-kit'
-            version gradlePluginVersion
+            version sdkVersion
             artifact("$corePath/transform-kit/build/libs/transform-kit.jar")
             artifact sourceJar("transformKit", "$corePath/transform-kit")
 
@@ -110,14 +110,14 @@ publishing {
         transform(MavenPublication) {
             groupId coreGroupId
             artifactId 'transform'
-            version gradlePluginVersion
+            version sdkVersion
             artifact("$corePath/transform/build/libs/transform.jar")
             artifact sourceJar("transform", "$corePath/transform")
 
             pom.withXml {
                 def root = asNode()
                 def dependencies = root.appendNode('dependencies')
-                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform-kit', gradlePluginVersion))
+                dependencies.append(getDependencyNode('compile', coreGroupId, 'transform-kit', sdkVersion))
 
                 def scm = root.appendNode('scm')
                 setScm(scm)
@@ -127,7 +127,7 @@ publishing {
         sd(MavenPublication) {
             groupId sdkHostGroupId
             artifactId 'sd'
-            version sdkHostVersion
+            version sdkVersion
             artifact("$sdkHostPath/sd/build/outputs/aar/sd-release.aar")
             artifact sourceJar("sd", "$sdkHostPath/sd")
 
@@ -142,8 +142,8 @@ publishing {
         sdJar(MavenPublication) {
             groupId sdkHostGroupId
             artifactId 'sdJar'
-            version sdkHostVersion
-            artifact("$sdkHostPath/sd/build/outputs/ows-${sdkHostVersion}.jar")
+            version sdkVersion
+            artifact("$sdkHostPath/sd/build/outputs/ows-${sdkVersion}.jar")
             artifact sourceJar("sdJar", "$sdkHostPath/sd")
 
             pom.withXml {

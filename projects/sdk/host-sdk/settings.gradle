@@ -1,1 +1,1 @@
-include 'sd'
+include 'sd', 'sd-helper'

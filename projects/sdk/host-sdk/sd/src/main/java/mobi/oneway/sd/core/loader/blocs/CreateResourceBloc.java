@@ -1,11 +1,14 @@
 package mobi.oneway.sd.core.loader.blocs;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Process;
 import android.webkit.WebView;
 
 import java.util.concurrent.CountDownLatch;
@@ -18,7 +21,7 @@ public class CreateResourceBloc {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                new WebView(hostAppContext);
+                creatWebview(hostAppContext);
                 latch.countDown();
             }
         });
@@ -37,6 +40,28 @@ public class CreateResourceBloc {
             return packageManager.getResourcesForApplication(packageArchiveInfo.applicationInfo);
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static void creatWebview(Context context) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                try {
+                    int myPid = Process.myPid();
+                    String str = context.getPackageName() + myPid;
+                    for (ActivityManager.RunningAppProcessInfo next : ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses()) {
+                        if (next.pid == myPid) {
+                            str = next.processName;
+                        }
+                    }
+                    WebView.setDataDirectorySuffix(str);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            new WebView(context);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

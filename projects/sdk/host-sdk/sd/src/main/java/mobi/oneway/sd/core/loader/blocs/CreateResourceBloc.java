@@ -60,7 +60,7 @@ public class CreateResourceBloc {
                 }
             }
             new WebView(context);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }

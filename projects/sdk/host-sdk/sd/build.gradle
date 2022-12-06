@@ -46,8 +46,8 @@ dependencies {
 /**
  * 解压aar 将jar包提取出来
  */
-task buildReleaseSd(dependsOn: ['assembleRelease']) {
-    doLast {
+task buildReleaseSd(type:Copy, dependsOn: ['assembleRelease']) {
+    /*doLast {
         def aarPath = "$project.buildDir.path/outputs/aar/sd-release.aar"
         def zipInputStream = new ZipInputStream(new FileInputStream(new File(aarPath)))
         def zipEntry = null
@@ -61,7 +61,14 @@ task buildReleaseSd(dependsOn: ['assembleRelease']) {
         }
 
         IOUtils.closeQuietly(zipInputStream)
+    }*/
+    def aarPath = "${project.buildDir.path}/outputs/aar/sd-release.aar"
+    def outputPath = "${project.buildDir.path}/outputs"
+    from(zipTree(aarPath)){
+        include 'classes.jar'
     }
+    into outputPath
+    rename("classes.jar","ows-${sdkVersion}.jar")
 }
 
 def copyJarFile(InputStream inputStream, File jarFile) {

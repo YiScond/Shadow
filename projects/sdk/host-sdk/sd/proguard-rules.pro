@@ -22,6 +22,7 @@
 
 -dontoptimize
 -dontpreverify
+-dontshrink
 
 #保持需要的类不被混淆
 -keep class mobi.oneway.sd.core.runtime.**{*;}

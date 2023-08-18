@@ -21,9 +21,10 @@ package com.tencent.shadow.core.transform_kit
 import javassist.ClassPool
 import javassist.CtClass
 
-abstract class AbstractTransformManager(ctClassInputMap: Map<CtClass, InputClass>,
-                                        private val classPool: ClassPool,
-                                        private val disableTransformClasses: Array<String>
+abstract class AbstractTransformManager(
+    ctClassInputMap: Map<CtClass, InputClass>,
+    private val classPool: ClassPool,
+    private val disableTransformClasses: Array<String>
 ) {
     private val allInputClass = ctClassInputMap.keys
 
@@ -50,7 +51,48 @@ abstract class AbstractTransformManager(ctClassInputMap: Map<CtClass, InputClass
      */
     fun Set<CtClass>.filterDisableTransformClasses(): Set<CtClass> {
         return this.filter {
-            it.name !in disableTransformClasses
+//            it.name !in disableTransformClasses
+            !isInDisableTransformClasses(it)
         }.toSet()
+    }
+
+    /**
+     * 是否在禁止transform的类规则里面
+     * 支持.*,.**
+     */
+    fun isInDisableTransformClasses(ctClass: CtClass): Boolean {
+        val className = ctClass.name
+        val subDotClassName = className.subStringBeforeDot()
+        disableTransformClasses.forEach {
+            var isMatch = false
+            val subDotDisableClassName = it.subStringBeforeDot()
+            if (it.endsWith(".*")) {
+                isMatch = subDotClassName.equals(subDotDisableClassName)
+            } else if (it.endsWith(".**")) {
+                isMatch = subDotClassName.startsWith(subDotDisableClassName)
+            } else {
+                isMatch = className.equals(it)
+            }
+
+            if (isMatch) {
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * 截取最后一个字符"."之前的字符串
+     * 例com.x
+     * return com
+     */
+    fun String.subStringBeforeDot(): String {
+        this.lastIndexOf(".").let {
+            if (it == -1) {
+                return this@subStringBeforeDot
+            } else {
+                return this@subStringBeforeDot.substring(0, it)
+            }
+        }
     }
 }

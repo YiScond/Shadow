@@ -117,9 +117,9 @@ public class PluginContextWrapper extends ShadowContext {
 
     @Override
     public Resources getResources() {
+        String pluginPackageName = super.getPackageName();
         if (pluginResourceWrapper == null) {
             Resources parentResources = super.getResources();
-            String pluginPackageName = ThirdShadowApplication.getShadowApplication().getPackageName();
             pluginResourceWrapper = new PluginResourceWrapper(parentResources, pluginPackageName);
         }
 
